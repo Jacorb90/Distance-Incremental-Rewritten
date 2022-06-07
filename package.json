@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "break_eternity.js": "^1.2.5",
     "core-js": "^3.8.3",
     "vue": "^3.2.13"
   },
@@ -29,5 +30,8 @@
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "**/*.{vue,js,jsx,ts,tsx}": "npm run lint"
   }
 }
