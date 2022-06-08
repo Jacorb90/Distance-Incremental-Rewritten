@@ -1,10 +1,5 @@
 import { DecimalSource } from "break_eternity.js";
 
-interface TabData {
-  main: number;
-  opt: number;
-}
-
 interface OptData {
   notation: number;
   distanceFormat: number;
@@ -15,7 +10,7 @@ interface OptData {
 }
 
 export interface Save {
-  tabs: TabData;
+  tab: string | null;
   version: number;
   achs: number[];
   saveID: number;
@@ -31,7 +26,7 @@ export interface Save {
   rocketFuel: DecimalSource;
 }
 
-interface MetaSave {
+export interface MetaSave {
   saveCount: number;
   currentSave: number;
   saves: {
@@ -59,10 +54,7 @@ function startingMetaSave(): MetaSave {
 
 function startingSave(saveID: number, modes: string[] = []): Save {
   return {
-    tabs: {
-      main: 0,
-      opt: 0,
-    },
+    tab: null,
     version: 1.0,
     achs: [],
     saveID,

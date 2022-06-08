@@ -165,7 +165,7 @@ function nPlaces(
 
 export function format(
   num: DecimalSource,
-  places = 3,
+  places = 4,
   notation = player.value?.opts.notation ?? 0
 ): string {
   const d = new Decimal(num);

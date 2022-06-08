@@ -1,33 +1,45 @@
 <template>
   <div class="left">
     <Basics />
+    <div style="margin-top: 9em"></div>
   </div>
-  <div class="right">Tabs go here</div>
+  <div class="right">
+    <Tabs />
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import player, { gameLoop } from "./main";
+import { defineComponent, ref } from "vue";
+import player, { gameLoop, metaSave } from "./main";
 import { loadSave, saveGame, versionControl } from "./saveload";
 import basics from "./features/basics/basics";
 import { signal } from "./util/feature";
+import Tabs from "./flourish/tabs/tabs.vue";
+
+// eslint-disable-next-line
+export const save = ref(() => {});
 
 export default defineComponent({
   name: "App",
   components: {
     Basics: basics.component,
+    Tabs,
   },
   mounted() {
-    const metaSave = loadSave();
-    player.value = metaSave.saves[metaSave.currentSave];
+    metaSave.value = loadSave();
+    player.value = metaSave.value.saves[metaSave.value.currentSave];
     versionControl(player.value);
 
     signal("load", 0);
 
+    // eslint-disable-next-line
+    save.value = () => saveGame(metaSave.value!);
+
     gameLoop();
 
     setInterval(() => {
-      if (player.value?.opts.autoSave) saveGame(metaSave);
+      // eslint-disable-next-line
+      if (player.value?.opts.autoSave) saveGame(metaSave.value!);
     }, 5000);
   },
 });
@@ -40,6 +52,7 @@ export default defineComponent({
   text-align: center;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   overflow: hidden;
+  transition-duration: 0.2s;
 }
 
 body {

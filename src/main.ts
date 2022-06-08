@@ -2,9 +2,10 @@ import { createApp, ref, Ref } from "vue";
 import App from "./App.vue";
 import { checkNextNews } from "./flourish/newsticker/newsticker";
 import { newsMovement } from "./flourish/newsticker/newsticker.vue";
-import { Save } from "./saveload";
+import { MetaSave, Save } from "./saveload";
 import { signal } from "./util/feature";
 
+export const metaSave: Ref<MetaSave | undefined> = ref(undefined);
 const player: Ref<Save | undefined> = ref(undefined);
 
 export function gameLoop() {
@@ -18,7 +19,7 @@ export function gameLoop() {
   signal("tick", diff);
 
   if (player?.value.opts.newsticker) {
-    newsMovement.value += diff * 5;
+    newsMovement.value += diff * 8;
     checkNextNews();
   }
 }

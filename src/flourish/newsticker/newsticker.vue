@@ -52,5 +52,6 @@ export default defineComponent({
   color: white !important;
   min-height: 18px;
   max-height: 18px;
+  transition-duration: 0s;
 }
 </style>
