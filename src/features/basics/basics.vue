@@ -1,27 +1,64 @@
 <template>
-  <div id="topleft" class="band lb">
+  <div class="band lb">
     <br />
-    You have gone {{ formatDistance(player?.distance ?? 0) }}<br /><br />
+    You have gone {{ formatDistance(player.distance) }}<br /><br />
     <span
       :style="{
-        color: Decimal.eq(player?.velocity ?? 0, basics.data.maxVelocity)
+        color: Decimal.eq(player.velocity, basics.data.maxVelocity)
           ? '#F77'
           : 'white',
       }"
-      >[+{{ formatDistance(player?.velocity ?? 0) }}/s]</span
+      >[+{{ formatDistance(player.velocity) }}/s]</span
     ><br />
     [+{{ formatDistance(basics.data.accel) }}/s<sup>2</sup>] <br /><br />
+    <div class="flexRow">
+      <button
+        id="rank"
+        class="btn"
+        :class="{ locked: Decimal.lt(player.distance, basics.data.rankReq) }"
+        @click="basics.actions.rankUp()"
+      >
+        <b>Rank {{ formatWhole(player.rank) }}</b
+        ><br /><br />
+        Reset your journey, but
+        {{ RANK_DESCS[Decimal.add(player.rank, 1).toNumber()] ?? "rank up." }}
+        <br />
+        <b>Req: {{ formatDistance(basics.data.rankReq) }}</b>
+      </button>
+
+      <button
+        id="tier"
+        class="btn"
+        :class="{ locked: Decimal.lt(player.rank, basics.data.tierReq) }"
+        @click="basics.actions.tierUp()"
+      >
+        <b>Tier {{ formatWhole(player.tier) }}</b
+        ><br /><br />
+        Reset your ranks, but
+        {{ TIER_DESCS[Decimal.add(player.tier, 1).toNumber()] ?? "tier up." }}
+        <br />
+        <b>Req: Rank {{ formatWhole(basics.data.tierReq) }}</b>
+      </button>
+    </div>
+    <br />
+    {{ getUnlockDesc() }}<br /><br />
     <NewsTicker />
+
+    <div id="versionDisplay">
+      {{ getVersionDisplay(player.version) }}
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { formatDistance } from "@/util/format";
+import { formatDistance, formatWhole } from "@/util/format";
 import player from "@/main";
-import basics from "./basics";
+import { basics, RANK_DESCS, TIER_DESCS } from "./basics";
 import NewsTicker from "@/flourish/newsticker/newsticker.vue";
 import Decimal from "break_eternity.js";
+import { getVersionDisplay } from "@/saveload";
+import { getUnlockDesc } from "@/util/feature";
 
 export default defineComponent({
   name: "Basics",
@@ -31,20 +68,57 @@ export default defineComponent({
   setup() {
     return {
       formatDistance,
+      formatWhole,
       player,
       basics,
       Decimal,
+      getVersionDisplay,
+      RANK_DESCS,
+      TIER_DESCS,
+      getUnlockDesc,
     };
   },
 });
 </script>
 
-<style>
-#topleft {
+<style scoped>
+#versionDisplay {
   position: absolute;
-  width: 80vw;
   top: 0;
   left: 0;
-  z-index: 2;
+  background-color: rgba(0, 0, 0, 20%);
+  border: 2px solid grey;
+  padding: 6px;
+  font-weight: bold;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
+
+#rank {
+  background-color: hsl(190, 20%, 25%);
+  border: hsl(190, 20%, 15%) 2px solid;
+  padding-left: 5px;
+  padding-right: 5px;
+  width: 200px;
+  min-height: 120px;
+  margin-bottom: 3px;
+}
+
+#rank:hover {
+  background-color: hsl(190, 20%, 40%);
+}
+
+#tier {
+  background-color: hsl(65, 20%, 25%);
+  border: hsl(65, 20%, 15%) 2px solid;
+  padding-left: 5px;
+  padding-right: 5px;
+  width: 200px;
+  min-height: 120px;
+  margin-bottom: 3px;
+}
+
+#tier:hover {
+  background-color: hsl(65, 20%, 40%);
 }
 </style>

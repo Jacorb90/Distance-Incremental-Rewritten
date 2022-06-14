@@ -1,24 +1,10 @@
-# distance-inc-rewrite
+# Distance Incremental Rewritten
 
-## Project setup
-```
-npm install
-```
+Made by Jacorb
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+Inspired by the original Distance Incremental by me (https://jacorb90.me/DistInc.github.io/main.html)
 
-### Compiles and minifies for production
-```
-npm run build
-```
+With CSS help from yhvr (https://github.com/YhvrWasTaken)
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Uses a Typescript+Vue framework (https://vuejs.org/)
+Uses Break Eternity by Patashu (https://github.com/Patashu/break_eternity.js)

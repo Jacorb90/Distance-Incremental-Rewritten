@@ -1,8 +1,9 @@
 <template>
-  <div v-for="tab in tabs" :key="tab.name">
+  <div v-for="tab in availableTabs()" :key="tab.name">
     <button
-      class="btn tb main"
+      class="btn tb"
       :style="tab.style ?? []"
+      :class="tab.class ?? { main: true }"
       @click="setTab(tab.name)"
     >
       {{ tab.name }}
@@ -18,10 +19,8 @@ export default defineComponent({
   name: "Tabs",
   components: {},
   setup() {
-    const tabs = availableTabs();
-
     return {
-      tabs,
+      availableTabs,
       setTab,
     };
   },
@@ -42,6 +41,10 @@ export default defineComponent({
   text-decoration: none;
 }
 
+.btn * {
+  cursor: pointer;
+}
+
 .btn:hover {
   background-color: hsl(140, 30%, 30%);
 }
@@ -53,11 +56,20 @@ export default defineComponent({
   box-shadow: none;
 }
 
+.btn.neg {
+  background-color: hsl(0, 30%, 20%) !important;
+  border: hsl(0, 30%, 10%) medium solid !important;
+}
+
+.btn.neg:hover {
+  background-color: hsl(0, 30%, 30%) !important;
+}
+
 .btn.locked {
-  background-color: hsl(0, 30%, 20%);
+  background-color: hsl(0, 30%, 20%) !important;
   border-radius: 10px;
-  border: hsl(0, 30%, 10%) medium solid;
-  display: inline-block;
+  border: hsl(0, 30%, 10%) medium solid !important;
+  display: inline-block !important;
   cursor: not-allowed;
   color: #ffffff;
   font-size: 12px;
@@ -66,8 +78,12 @@ export default defineComponent({
   text-decoration: none;
 }
 
+.btn.locked * {
+  cursor: not-allowed !important;
+}
+
 .btn.locked:hover {
-  background-color: hsl(0, 30%, 30%);
+  background-color: hsl(0, 30%, 30%) !important;
 }
 
 .btn.locked:active {
@@ -120,5 +136,13 @@ export default defineComponent({
 .right .btn.tb:active {
   top: 0 !important;
   left: 0 !important;
+}
+
+.btn.rockets {
+  background-color: hsl(0, 0%, 35%);
+}
+
+.btn.rockets:hover {
+  background-color: hsl(0, 0%, 50%);
 }
 </style>

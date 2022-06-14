@@ -1,7 +1,10 @@
 <template>
   <div class="left">
     <Basics />
-    <div style="margin-top: 9em"></div>
+    <div>
+      <Options v-if="player.tab === 'Options'" />
+      <Rockets v-if="player.tab === 'Rockets'" />
+    </div>
   </div>
   <div class="right">
     <Tabs />
@@ -9,37 +12,46 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent } from "vue";
 import player, { gameLoop, metaSave } from "./main";
-import { loadSave, saveGame, versionControl } from "./saveload";
-import basics from "./features/basics/basics";
+import { loadSave, saveGame, startingSave, versionControl } from "./saveload";
 import { signal } from "./util/feature";
 import Tabs from "./flourish/tabs/tabs.vue";
-
-// eslint-disable-next-line
-export const save = ref(() => {});
+import Options from "./flourish/options/options.vue";
+import basicsVue from "./features/basics/basics.vue";
+import rocketsVue from "./features/rockets/rockets.vue";
 
 export default defineComponent({
   name: "App",
   components: {
-    Basics: basics.component,
+    Basics: basicsVue,
+    Rockets: rocketsVue,
     Tabs,
+    Options,
+  },
+  setup() {
+    return {
+      player,
+    };
   },
   mounted() {
+    document.title = "Distance Incremental Rewritten";
+
     metaSave.value = loadSave();
-    player.value = metaSave.value.saves[metaSave.value.currentSave];
+    player.value =
+      metaSave.value.saves[metaSave.value.currentSave] ??
+      startingSave(metaSave.value.currentSave);
     versionControl(player.value);
 
-    signal("load", 0);
+    if (!player.value.opts.offlineTime)
+      player.value.lastTime = new Date().getTime();
 
-    // eslint-disable-next-line
-    save.value = () => saveGame(metaSave.value!);
+    signal("load", 0);
 
     gameLoop();
 
     setInterval(() => {
-      // eslint-disable-next-line
-      if (player.value?.opts.autoSave) saveGame(metaSave.value!);
+      if (player.value.opts.autoSave) saveGame(metaSave.value);
     }, 5000);
   },
 });
@@ -53,10 +65,12 @@ export default defineComponent({
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   overflow: hidden;
   transition-duration: 0.2s;
+  cursor: default;
+  user-select: none;
 }
 
 body {
-  background-color: rgb(28, 28, 28);
+  background-color: rgb(28, 28, 28) !important;
 }
 
 #app {

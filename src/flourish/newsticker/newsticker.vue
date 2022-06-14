@@ -1,5 +1,5 @@
 <template>
-  <div id="newsticker" v-if="player?.opts.newsticker ?? false">
+  <div id="newsticker" v-if="player.opts.newsticker">
     <div id="news" :style="{ right: newsMovement + 'ch' }">
       {{ currentNews }}
     </div>

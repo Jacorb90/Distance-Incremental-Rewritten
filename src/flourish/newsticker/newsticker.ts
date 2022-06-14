@@ -75,15 +75,15 @@ const NEWSTICKER_DATA: NewsData[] = [
   // Distance-based Conditions
   {
     text: "You've travelled more than me today",
-    condition: () => Decimal.gte(player.value?.distance ?? 0, 500),
+    condition: () => Decimal.gte(player.value.distance, 500),
   },
   {
     text: "The world is your pebble",
-    condition: () => Decimal.gte(player.value?.distance ?? 0, DISTANCES.ly),
+    condition: () => Decimal.gte(player.value.distance, DISTANCES.ly),
   },
   {
     text: "I guess multiple universes exist then",
-    condition: () => Decimal.gte(player.value?.distance ?? 0, DISTANCES.uni),
+    condition: () => Decimal.gte(player.value.distance, DISTANCES.uni),
   },
 
   // Chance-based Conditions
@@ -123,21 +123,21 @@ const NEWSTICKER_DATA: NewsData[] = [
   // Achievement-based Conditions
   {
     text: "You're a superstar in this world of false light",
-    condition: () => (player?.value?.achs.length ?? 0) >= 5,
+    condition: () => player.value.achs.length >= 5,
   },
   {
     text: "Wow, you are slightly dedicated",
-    condition: () => (player?.value?.achs.length ?? 0) >= 10,
+    condition: () => player.value.achs.length >= 10,
   },
   {
     text: "Out to the world beyond the rocket",
-    condition: () => (player?.value?.achs.length ?? 0) >= 5,
+    condition: () => player.value.achs.length >= 5,
   },
 
   // Special Conditions
   {
     text: "Weren't we already using those?",
-    condition: () => Decimal.gt(player?.value?.rockets ?? 0, 0),
+    condition: () => Decimal.gt(player.value.rockets, 0),
   },
 ];
 

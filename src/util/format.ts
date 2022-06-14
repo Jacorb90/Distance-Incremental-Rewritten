@@ -127,12 +127,11 @@ function nPlaces(
         nPlaces(m, places, false, base) + "e-" + nPlaces(e, places, true, base)
       );
     } else if (num < Math.pow(10, places) || num < 1000) {
+      const innerPlaces = Math.min(Math.max(len - digits, 0), places);
       return addZeroes(
         num,
-        parseFloat(
-          rounded.toFixed(Math.min(Math.max(len - digits, 0), places))
-        ),
-        len - digits,
+        parseFloat(rounded.toFixed(innerPlaces)),
+        innerPlaces,
         whole
       );
     } else {
@@ -163,10 +162,14 @@ function nPlaces(
   }
 }
 
+export function formatWhole(num: DecimalSource) {
+  return format(num, 0);
+}
+
 export function format(
   num: DecimalSource,
   places = 4,
-  notation = player.value?.opts.notation ?? 0
+  notation = player.value.opts.notation
 ): string {
   const d = new Decimal(num);
 
@@ -340,7 +343,7 @@ export function format(
 
 export function formatDistance(
   num: DecimalSource,
-  notation = player.value?.opts.distanceFormat ?? 0
+  notation = player.value.opts.distanceFormat
 ): string {
   switch (notation) {
     case 0: // Normal (0)
@@ -363,7 +366,7 @@ export function formatDistance(
       return "???";
 
     case 1: // Just Meters (1)
-      return format(num) + "m";
+      return format(num) + " m";
 
     default: // Meters, Universes, and Multiverses (2)
       for (let i = Object.keys(LIMITED_DISTANCES).length - 1; i >= 0; i--) {

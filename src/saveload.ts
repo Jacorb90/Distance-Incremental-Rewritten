@@ -1,23 +1,33 @@
 import { DecimalSource } from "break_eternity.js";
+import { metaSave } from "./main";
+
+export interface Version {
+  alpha?: string;
+  beta?: string;
+  release?: string;
+}
 
 interface OptData {
   notation: number;
   distanceFormat: number;
   theme: number;
   autoSave: boolean;
+  offlineTime: boolean;
   newsticker: boolean;
   hotkeys: boolean;
 }
 
 export interface Save {
   tab: string | null;
-  version: number;
+  version: Version;
   achs: number[];
   saveID: number;
+  saveName: string;
   opts: OptData;
   modes: string[];
   lastTime: number;
   timePlayed: number;
+  featuresUnl: string[];
   distance: DecimalSource;
   velocity: DecimalSource;
   rank: DecimalSource;
@@ -27,7 +37,6 @@ export interface Save {
 }
 
 export interface MetaSave {
-  saveCount: number;
   currentSave: number;
   saves: {
     [key: number]: Save;
@@ -40,11 +49,10 @@ function createSaveID(times = 0) {
   return Math.floor(Math.abs(Math.sin(times * 1e10) * 1e10));
 }
 
-function startingMetaSave(): MetaSave {
+export function startingMetaSave(): MetaSave {
   const id = createSaveID();
 
   return {
-    saveCount: 1,
     currentSave: id,
     saves: {
       [id]: startingSave(id),
@@ -52,23 +60,28 @@ function startingMetaSave(): MetaSave {
   };
 }
 
-function startingSave(saveID: number, modes: string[] = []): Save {
+export function startingSave(saveID: number, modes: string[] = []): Save {
   return {
     tab: null,
-    version: 1.0,
+    version: {
+      alpha: "1.0",
+    },
     achs: [],
     saveID,
+    saveName: "Save #" + saveID,
     opts: {
       notation: 0,
       distanceFormat: 0,
       theme: 0,
       autoSave: true,
+      offlineTime: true,
       newsticker: true,
       hotkeys: true,
     },
     modes,
     lastTime: new Date().getTime(),
     timePlayed: 0,
+    featuresUnl: [],
     distance: 0,
     velocity: 0,
     rank: 1,
@@ -102,4 +115,31 @@ export function loadSave(): MetaSave {
 
 export function saveGame(metaSave: MetaSave) {
   localStorage.setItem(LOCALSTORAGE_NAME, btoa(JSON.stringify(metaSave)));
+}
+
+export function loadSpecificSave(id: number) {
+  metaSave.value.currentSave = id;
+  saveGame(metaSave.value);
+
+  location.reload();
+}
+
+export function deleteSpecificSave(id: number) {
+  if (!confirm("Are you sure you want to delete this save?")) return;
+
+  delete metaSave.value.saves[id];
+  if (metaSave.value.currentSave == id) {
+    metaSave.value.currentSave = Math.max(metaSave.value.currentSave - 1, 0);
+    loadSpecificSave(metaSave.value.currentSave);
+  }
+}
+
+export function getVersionDisplay(v: Version) {
+  let display = "";
+
+  if (v.release !== undefined) display += "v" + v.release + " ";
+  if (v.beta !== undefined) display += "β" + v.beta + " ";
+  if (v.alpha !== undefined) display += "α" + v.alpha;
+
+  return display;
 }
