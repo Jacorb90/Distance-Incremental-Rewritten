@@ -11,20 +11,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import { availableTabs, setTab } from "./tabs";
-
-export default defineComponent({
-  name: "Tabs",
-  components: {},
-  setup() {
-    return {
-      availableTabs,
-      setTab,
-    };
-  },
-});
 </script>
 
 <style>
@@ -96,6 +84,7 @@ export default defineComponent({
 .btn.tb {
   background-color: hsl(0, 0%, 20%);
   border: hsl(0, 0%, 30%) solid medium;
+  border-left: none !important;
   border-radius: 10px !important;
   display: inline-block;
   cursor: pointer;

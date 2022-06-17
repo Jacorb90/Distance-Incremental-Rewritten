@@ -8,8 +8,10 @@
           ? '#F77'
           : 'white',
       }"
-      >[+{{ formatDistance(player.velocity) }}/s]</span
-    ><br />
+      >[+{{ formatDistance(player.velocity) }}/s] [Max:
+      {{ formatDistance(basics.data.maxVelocity) }}/s]</span
+    >
+    <br />
     [+{{ formatDistance(basics.data.accel) }}/s<sup>2</sup>] <br /><br />
     <div class="flexRow">
       <button
@@ -50,35 +52,14 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import { formatDistance, formatWhole } from "@/util/format";
-import player from "@/main";
+import { player } from "@/main";
 import { basics, RANK_DESCS, TIER_DESCS } from "./basics";
 import NewsTicker from "@/flourish/newsticker/newsticker.vue";
 import Decimal from "break_eternity.js";
 import { getVersionDisplay } from "@/saveload";
 import { getUnlockDesc } from "@/util/feature";
-
-export default defineComponent({
-  name: "Basics",
-  components: {
-    NewsTicker,
-  },
-  setup() {
-    return {
-      formatDistance,
-      formatWhole,
-      player,
-      basics,
-      Decimal,
-      getVersionDisplay,
-      RANK_DESCS,
-      TIER_DESCS,
-      getUnlockDesc,
-    };
-  },
-});
 </script>
 
 <style scoped>

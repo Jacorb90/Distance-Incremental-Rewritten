@@ -2,6 +2,13 @@
   <div class="left">
     <Basics />
     <div>
+      <button
+        v-if="player.tab !== null"
+        @click="player.tab = null"
+        class="btn min"
+      >
+        Hide
+      </button>
       <Options v-if="player.tab === 'Options'" />
       <Rockets v-if="player.tab === 'Rockets'" />
     </div>
@@ -11,50 +18,14 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import player, { gameLoop, metaSave } from "./main";
-import { loadSave, saveGame, startingSave, versionControl } from "./saveload";
-import { signal } from "./util/feature";
+<script setup lang="ts">
+import { load, player } from "./main";
 import Tabs from "./flourish/tabs/tabs.vue";
 import Options from "./flourish/options/options.vue";
-import basicsVue from "./features/basics/basics.vue";
-import rocketsVue from "./features/rockets/rockets.vue";
+import Basics from "./features/basics/basics.vue";
+import Rockets from "./features/rockets/rockets.vue";
 
-export default defineComponent({
-  name: "App",
-  components: {
-    Basics: basicsVue,
-    Rockets: rocketsVue,
-    Tabs,
-    Options,
-  },
-  setup() {
-    return {
-      player,
-    };
-  },
-  mounted() {
-    document.title = "Distance Incremental Rewritten";
-
-    metaSave.value = loadSave();
-    player.value =
-      metaSave.value.saves[metaSave.value.currentSave] ??
-      startingSave(metaSave.value.currentSave);
-    versionControl(player.value);
-
-    if (!player.value.opts.offlineTime)
-      player.value.lastTime = new Date().getTime();
-
-    signal("load", 0);
-
-    gameLoop();
-
-    setInterval(() => {
-      if (player.value.opts.autoSave) saveGame(metaSave.value);
-    }, 5000);
-  },
-});
+load();
 </script>
 
 <style>
@@ -98,5 +69,9 @@ body {
 
 .lb {
   background-color: hsl(0, 0%, 20%);
+}
+
+.btn.min {
+  float: left;
 }
 </style>

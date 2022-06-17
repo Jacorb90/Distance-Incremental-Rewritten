@@ -78,34 +78,18 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import { OPTION_DATA, loadModalOpen } from "./options";
 import { loadSpecificSave, deleteSpecificSave } from "@/saveload";
 import { parseFunc, formatDistance } from "@/util/format";
 import { metaSave } from "@/main";
 
-export default defineComponent({
-  name: "Options",
-  components: {},
-  setup() {
-    return {
-      OPTION_DATA,
-      parseFunc,
-      loadModalOpen,
-      metaSave,
-      formatDistance,
-      loadSpecificSave,
-      deleteSpecificSave,
-      renameSpecificSave(id: number) {
-        if (metaSave.value === undefined) return;
+function renameSpecificSave(id: number) {
+  if (metaSave.value === undefined) return;
 
-        metaSave.value.saves[id].saveName =
-          prompt("Type save name here:") ?? "Save #" + id;
-      },
-    };
-  },
-});
+  metaSave.value.saves[id].saveName =
+    prompt("Type save name here:") ?? "Save #" + id;
+}
 </script>
 
 <style>

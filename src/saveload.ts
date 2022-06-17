@@ -1,5 +1,6 @@
 import { DecimalSource } from "break_eternity.js";
-import { metaSave } from "./main";
+import { toRaw } from "vue";
+import { metaSave, player } from "./main";
 
 export interface Version {
   alpha?: string;
@@ -64,7 +65,7 @@ export function startingSave(saveID: number, modes: string[] = []): Save {
   return {
     tab: null,
     version: {
-      alpha: "1.0",
+      alpha: "1.0.1",
     },
     achs: [],
     saveID,
@@ -91,10 +92,10 @@ export function startingSave(saveID: number, modes: string[] = []): Save {
   };
 }
 
-export function versionControl(save: Save) {
+export function versionControl() {
   // version control shenanigans here
 
-  save.version = startingSave(0).version;
+  player.version = startingSave(0).version;
 }
 
 export function loadSave(): MetaSave {
@@ -113,13 +114,14 @@ export function loadSave(): MetaSave {
   }
 }
 
-export function saveGame(metaSave: MetaSave) {
+export function saveGame(setMeta = true) {
+  if (setMeta) metaSave.saves[metaSave.currentSave] = toRaw(player);
   localStorage.setItem(LOCALSTORAGE_NAME, btoa(JSON.stringify(metaSave)));
 }
 
 export function loadSpecificSave(id: number) {
-  metaSave.value.currentSave = id;
-  saveGame(metaSave.value);
+  metaSave.currentSave = id;
+  saveGame(false);
 
   location.reload();
 }
@@ -127,10 +129,10 @@ export function loadSpecificSave(id: number) {
 export function deleteSpecificSave(id: number) {
   if (!confirm("Are you sure you want to delete this save?")) return;
 
-  delete metaSave.value.saves[id];
-  if (metaSave.value.currentSave == id) {
-    metaSave.value.currentSave = Math.max(metaSave.value.currentSave - 1, 0);
-    loadSpecificSave(metaSave.value.currentSave);
+  delete metaSave.saves[id];
+  if (metaSave.currentSave == id) {
+    metaSave.currentSave = Math.max(metaSave.currentSave - 1, 0);
+    loadSpecificSave(metaSave.currentSave);
   }
 }
 

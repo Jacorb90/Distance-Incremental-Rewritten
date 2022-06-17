@@ -1,12 +1,10 @@
-import player from "@/main";
+import { player } from "@/main";
 import features, { addFeature, signal } from "@/util/feature";
 import Decimal, { DecimalSource } from "break_eternity.js";
 import { ref } from "vue";
 import { rockets } from "../rockets/rockets";
 
-export interface RTDesc {
-  [key: number]: string;
-}
+export type RTDesc = Record<number, string>;
 
 export const RANK_DESCS: RTDesc = {
   2: "increase Maximum Velocity by 1 m/s.",
@@ -64,11 +62,11 @@ addFeature<BasicData, BasicActions>("basics", 0, {
 
   values: {
     rank3Reward: () => {
-      return Decimal.pow(1.1, player.value.rank);
+      return Decimal.pow(1.1, player.rank);
     },
 
     tier3Reward: () => {
-      return Decimal.pow(2, player.value.tier);
+      return Decimal.pow(2, player.tier);
     },
 
     preRocketAccel: () => {
@@ -126,10 +124,7 @@ addFeature<BasicData, BasicActions>("basics", 0, {
       if (hasRank(4)) base -= 0.3;
       if (hasRank(6)) base -= 0.25;
 
-      let req = Decimal.pow(
-        base,
-        Decimal.sub(player.value.rank, 1).pow(2)
-      ).times(10);
+      let req = Decimal.pow(base, Decimal.sub(player.rank, 1).pow(2)).times(10);
 
       if (hasTier(3)) req = Decimal.div(req, basics.value.data.tier3Reward);
 
@@ -137,9 +132,9 @@ addFeature<BasicData, BasicActions>("basics", 0, {
     },
 
     tierReq: () => {
-      return Decimal.pow(player.value.tier, 2)
+      return Decimal.pow(player.tier, 2)
         .div(5)
-        .plus(player.value.tier)
+        .plus(player.tier)
         .plus(3)
         .floor();
     },
@@ -147,42 +142,41 @@ addFeature<BasicData, BasicActions>("basics", 0, {
 
   receptors: {
     tick: (diff) => {
-      player.value.velocity = Decimal.mul(basics.value.data.accel, diff)
-        .plus(player.value.velocity)
+      player.velocity = Decimal.mul(basics.value.data.accel, diff)
+        .plus(player.velocity)
         .min(basics.value.data.maxVelocity);
-      player.value.distance = Decimal.mul(player.value.velocity, diff).plus(
-        player.value.distance
+      player.distance = Decimal.mul(player.velocity, diff).plus(
+        player.distance
       );
     },
 
     reset: (id) => {
       if (id >= 0) {
-        player.value.distance = 0;
-        player.value.velocity = 0;
+        player.distance = 0;
+        player.velocity = 0;
       }
       if (id >= 1) {
-        player.value.rank = 1;
+        player.rank = 1;
       }
       if (id >= 2) {
-        player.value.tier = 0;
+        player.tier = 0;
       }
     },
   },
 
   actions: {
     rankUp: () => {
-      if (Decimal.lt(player.value.distance, basics.value.values.rankReq()))
-        return;
+      if (Decimal.lt(player.distance, basics.value.values.rankReq())) return;
 
-      player.value.rank = Decimal.add(player.value.rank, 1);
+      player.rank = Decimal.add(player.rank, 1);
 
       signal("reset", 0);
     },
 
     tierUp: () => {
-      if (Decimal.lt(player.value.rank, basics.value.values.tierReq())) return;
+      if (Decimal.lt(player.rank, basics.value.values.tierReq())) return;
 
-      player.value.tier = Decimal.add(player.value.tier, 1);
+      player.tier = Decimal.add(player.tier, 1);
 
       signal("reset", 1);
     },
@@ -194,9 +188,9 @@ addFeature<BasicData, BasicActions>("basics", 0, {
 export const basics = ref(features.value.basics);
 
 export function hasRank(n: DecimalSource) {
-  return Decimal.gte(player.value.rank, n);
+  return Decimal.gte(player.rank, n);
 }
 
 export function hasTier(n: DecimalSource) {
-  return Decimal.gte(player.value.tier, n);
+  return Decimal.gte(player.tier, n);
 }

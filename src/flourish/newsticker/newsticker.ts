@@ -1,8 +1,7 @@
-import player from "@/main";
+import { player } from "@/main";
 import { DISTANCES, parseFunc } from "@/util/format";
 import Decimal from "break_eternity.js";
 import { Ref, ref } from "vue";
-import { currentNews, newsMovement } from "./newsticker.vue";
 
 interface NewsData {
   text: string | (() => string);
@@ -71,19 +70,34 @@ const NEWSTICKER_DATA: NewsData[] = [
       Math.floor(Math.random() * 1e10 + 1e9).toString(2),
   },
   { text: "Bad testing" },
+  { text: "I'm lazy, so why don't you go rickroll yourself this time..." },
+  {
+    text: "This news ticker is completely common. Not any more rare or special than any other. What a waste of a read...",
+  },
+  { text: '"Ya like jazz?" - BBB' },
+  {
+    text: "Remember to export often! If you happen to delete your search history (for ANY reason), the game's saves will be deleted too!",
+  },
+  { text: "Gotta wonder what you're using to travel this far" },
+  {
+    text: "BREAKING NEWS: Florida Man goes out for a jog: becomes High God of the Omniverse",
+  },
+  { text: "This feature is definitely not a ripoff of anything else..." },
+  { text: "This is not the 69th news ticker" },
+  { text: "If you can see this, go back to playing the game" },
 
   // Distance-based Conditions
   {
     text: "You've travelled more than me today",
-    condition: () => Decimal.gte(player.value.distance, 500),
+    condition: () => Decimal.gte(player.distance, 500),
   },
   {
     text: "The world is your pebble",
-    condition: () => Decimal.gte(player.value.distance, DISTANCES.ly),
+    condition: () => Decimal.gte(player.distance, DISTANCES.ly),
   },
   {
     text: "I guess multiple universes exist then",
-    condition: () => Decimal.gte(player.value.distance, DISTANCES.uni),
+    condition: () => Decimal.gte(player.distance, DISTANCES.uni),
   },
 
   // Chance-based Conditions
@@ -123,25 +137,27 @@ const NEWSTICKER_DATA: NewsData[] = [
   // Achievement-based Conditions
   {
     text: "You're a superstar in this world of false light",
-    condition: () => player.value.achs.length >= 5,
+    condition: () => player.achs.length >= 5,
   },
   {
     text: "Wow, you are slightly dedicated",
-    condition: () => player.value.achs.length >= 10,
+    condition: () => player.achs.length >= 10,
   },
   {
     text: "Out to the world beyond the rocket",
-    condition: () => player.value.achs.length >= 5,
+    condition: () => player.achs.length >= 5,
   },
 
   // Special Conditions
   {
     text: "Weren't we already using those?",
-    condition: () => Decimal.gt(player.value.rockets, 0),
+    condition: () => Decimal.gt(player.rockets, 0),
   },
 ];
 
 const newsTimeout: Ref<number> = ref(-1);
+export const currentNews = ref("");
+export const newsMovement = ref(0);
 
 function getNews(): string {
   const availableNews = NEWSTICKER_DATA.filter(

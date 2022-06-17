@@ -9,7 +9,8 @@
     >
       <b>{{ formatWhole(player.rockets) }} Rockets</b><br /><br />
       Reset all previous progress to gain
-      {{ formatWhole(rockets.data.resetGain) }} Rockets.</button
+      {{ formatWhole(rockets.data.resetGain) }} Rockets.<br /><br />
+      Next At: {{ formatDistance(rockets.data.nextAt) }}</button
     ><br /><br /><br />
 
     Rocket Effect: ((log(x+1)+1)<sup>{{ format(rockets.data.effExp) }}</sup>
@@ -20,26 +21,11 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import { formatWhole, format } from "@/util/format";
+<script setup lang="ts">
+import { formatWhole, format, formatDistance } from "@/util/format";
 import Decimal from "break_eternity.js";
-import player from "@/main";
+import { player } from "@/main";
 import { rockets } from "./rockets";
-
-export default defineComponent({
-  name: "Rockets",
-  components: {},
-  setup() {
-    return {
-      formatWhole,
-      format,
-      Decimal,
-      player,
-      rockets,
-    };
-  },
-});
 </script>
 
 <style scoped>

@@ -1,4 +1,4 @@
-import player from "@/main";
+import { player } from "@/main";
 import { StyleValue } from "vue";
 
 interface TabData {
@@ -17,7 +17,7 @@ const TAB_DATA: TabData[] = [
     class: {
       rockets: true,
     },
-    condition: () => player.value.featuresUnl.includes("rockets"),
+    condition: () => player.featuresUnl.includes("rockets"),
   },
 ];
 
@@ -26,5 +26,5 @@ export function availableTabs(): TabData[] {
 }
 
 export function setTab(name: string) {
-  player.value.tab = name;
+  player.tab = name;
 }

@@ -1,5 +1,13 @@
 # Changelog
 
+## α1.0.1
+
+- Displayed Max Velocity
+- Minor CSS improvements
+- Fixed bug that made 11 Ranks display as 10
+- Reworked some programming-related stuff
+- A few minor performance improvements
+
 ## α1.0
 
 - Setup the new framework

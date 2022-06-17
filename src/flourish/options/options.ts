@@ -1,4 +1,4 @@
-import player, { metaSave } from "@/main";
+import { player, metaSave } from "@/main";
 import { saveGame, startingSave } from "@/saveload";
 import { ref, StyleValue } from "vue";
 
@@ -17,7 +17,7 @@ export const OPTION_DATA: {SAVING: OptionData[], OTHER: OptionData[]} = {
     {
       text: "Save",
       action: () => {
-        saveGame(metaSave.value);
+        saveGame();
       },
     },
     {
@@ -31,12 +31,9 @@ export const OPTION_DATA: {SAVING: OptionData[], OTHER: OptionData[]} = {
 
         if (data !== null) {
           try {
-            metaSave.value.saves[metaSave.value.currentSave] = JSON.parse(
-              atob(data)
-            );
-            player.value = metaSave.value.saves[metaSave.value.currentSave];
-
-            saveGame(metaSave.value);
+            metaSave.saves[metaSave.currentSave] = JSON.parse(atob(data));
+            Object.assign(player, metaSave.saves[metaSave.currentSave]);
+            saveGame();
           } catch (e) {
             alert(
               "It seems as though your save cannot be loaded! Please check the console for details!"
@@ -49,9 +46,7 @@ export const OPTION_DATA: {SAVING: OptionData[], OTHER: OptionData[]} = {
     {
       text: "Export",
       action: () => {
-        const data = btoa(
-          JSON.stringify(metaSave.value.saves[metaSave.value.currentSave])
-        );
+        const data = btoa(JSON.stringify(metaSave.saves[metaSave.currentSave]));
 
         navigator.clipboard.writeText(data).catch((e) => {
           alert(
@@ -67,12 +62,12 @@ export const OPTION_DATA: {SAVING: OptionData[], OTHER: OptionData[]} = {
         if (!confirm("Are you sure you want to reset your current save?"))
           return;
 
-        metaSave.value.saves[metaSave.value.currentSave] = startingSave(
-          metaSave.value.currentSave,
-          metaSave.value.saves[metaSave.value.currentSave].modes
+        metaSave.saves[metaSave.currentSave] = startingSave(
+          metaSave.currentSave,
+          metaSave.saves[metaSave.currentSave].modes
         );
 
-        saveGame(metaSave.value);
+        saveGame();
         location.reload();
       },
       classes: {
@@ -80,47 +75,42 @@ export const OPTION_DATA: {SAVING: OptionData[], OTHER: OptionData[]} = {
       },
     },
     {
-      text: () => "Autosave: " + (player.value.opts.autoSave ? "ON" : "OFF"),
+      text: () => "Autosave: " + (player.opts.autoSave ? "ON" : "OFF"),
       action: () => {
-        player.value.opts.autoSave = !player.value.opts.autoSave;
+        player.opts.autoSave = !player.opts.autoSave;
       },
     },
   ],
 
   OTHER: [
     {
-      text: () =>
-        "Offline Time: " + (player.value.opts.offlineTime ? "ON" : "OFF"),
+      text: () => "Offline Time: " + (player.opts.offlineTime ? "ON" : "OFF"),
       action: () => {
-        player.value.opts.offlineTime = !player.value.opts.offlineTime;
+        player.opts.offlineTime = !player.opts.offlineTime;
       },
     },
     {
       text: () =>
         "Notation: " +
         ["Mixed Scientific", "Standard", "Scientific"][
-          player.value.opts.notation ?? 0
+          player.opts.notation ?? 0
         ],
       action: () => {
-        player.value.opts.notation = (player.value.opts.notation + 1) % 3;
+        player.opts.notation = (player.opts.notation + 1) % 3;
       },
     },
     {
       text: () =>
         "Distance Format: " +
-        ["Normal", "Just Meters", "Reduced"][
-          player.value.opts.distanceFormat ?? 0
-        ],
+        ["Normal", "Just Meters", "Reduced"][player.opts.distanceFormat ?? 0],
       action: () => {
-        player.value.opts.distanceFormat =
-          (player.value.opts.distanceFormat + 1) % 3;
+        player.opts.distanceFormat = (player.opts.distanceFormat + 1) % 3;
       },
     },
     {
-      text: () =>
-        "Newsticker: " + (player.value.opts.newsticker ? "ON" : "OFF"),
+      text: () => "Newsticker: " + (player.opts.newsticker ? "ON" : "OFF"),
       action: () => {
-        player.value.opts.newsticker = !player.value.opts.newsticker;
+        player.opts.newsticker = !player.opts.newsticker;
       },
     },
   ],

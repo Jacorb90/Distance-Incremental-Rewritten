@@ -1,4 +1,4 @@
-import player from "@/main";
+import { player } from "@/main";
 import { Ref, ref } from "vue";
 
 type Signal = "tick" | "reset" | "load";
@@ -73,18 +73,15 @@ export function addFeature<T, A>(
 export function updateUnlocks() {
   for (const i in featureOrder) {
     const key = featureOrder[i];
-    if (
-      !player.value.featuresUnl.includes(key) &&
-      features.value[key].unl.reached()
-    )
-      player.value.featuresUnl.push(key);
+    if (!player.featuresUnl.includes(key) && features.value[key].unl.reached())
+      player.featuresUnl.push(key);
   }
 }
 
 export function getUnlockDesc(): string {
   for (const i in featureOrder) {
     const key = featureOrder[i];
-    if (!player.value.featuresUnl.includes(key))
+    if (!player.featuresUnl.includes(key))
       return features.value[key].unl.desc();
   }
 

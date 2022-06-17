@@ -1,5 +1,5 @@
 import Decimal, { DecimalSource } from "break_eternity.js";
-import player from "@/main";
+import { player } from "@/main";
 
 export const DISTANCES = {
   m: 1,
@@ -163,13 +163,13 @@ function nPlaces(
 }
 
 export function formatWhole(num: DecimalSource) {
-  return format(num, 0);
+  return format(num, new Decimal(num).floor().min(4).toNumber());
 }
 
 export function format(
   num: DecimalSource,
   places = 4,
-  notation = player.value.opts.notation
+  notation = player.opts.notation
 ): string {
   const d = new Decimal(num);
 
@@ -337,13 +337,15 @@ export function format(
       }
 
     default: // Scientific (2)
+      if (d.lt(1e3)) return dPlaces(d, places);
+      else if (d.lt(1e16)) d.toExponential(places);
       return d.toStringWithDecimalPlaces(places);
   }
 }
 
 export function formatDistance(
   num: DecimalSource,
-  notation = player.value.opts.distanceFormat
+  notation = player.opts.distanceFormat
 ): string {
   switch (notation) {
     case 0: // Normal (0)
