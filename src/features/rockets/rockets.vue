@@ -4,20 +4,22 @@
     <button
       id="rocket"
       class="btn"
-      :class="{ locked: Decimal.lt(rockets.data.resetGain, 1) }"
+      :class="{ locked: Decimal.lt(rockets.data.resetGain.value, 1) }"
       @click="rockets.actions.rocketUp()"
     >
       <b>{{ formatWhole(player.rockets) }} Rockets</b><br /><br />
       Reset all previous progress to gain
-      {{ formatWhole(rockets.data.resetGain) }} Rockets.<br /><br />
-      Next At: {{ formatDistance(rockets.data.nextAt) }}</button
+      {{ formatWhole(rockets.data.resetGain.value) }} Rockets.<br /><br />
+      Next At: {{ formatDistance(rockets.data.nextAt.value) }}</button
     ><br /><br /><br />
 
-    Rocket Effect: ((log(x+1)+1)<sup>{{ format(rockets.data.effExp) }}</sup>
-    &times; {{ format(rockets.data.effMult) }}<br /><br />
+    Rocket Effect: ((log(x+1)+1)<sup>{{
+      format(rockets.data.effExp.value)
+    }}</sup>
+    &times; {{ format(rockets.data.effMult.value) }}<br /><br />
 
-    Maximum Velocity: {{ format(rockets.data.maxVelMult) }}x<br />
-    Acceleration: {{ format(rockets.data.accMult) }}x<br /><br />
+    Maximum Velocity: {{ format(rockets.data.maxVelMult.value) }}x<br />
+    Acceleration: {{ format(rockets.data.accMult.value) }}x<br /><br />
   </div>
 </template>
 

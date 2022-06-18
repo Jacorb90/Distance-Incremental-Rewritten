@@ -1,5 +1,11 @@
 # Changelog
 
+## α1.0.2
+
+- Migrated to Vite
+- Reworked some more programming-related stuff for performance improvements
+- Fixed saving bug
+
 ## α1.0.1
 
 - Displayed Max Velocity

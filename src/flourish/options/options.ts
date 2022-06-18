@@ -32,8 +32,9 @@ export const OPTION_DATA: {SAVING: OptionData[], OTHER: OptionData[]} = {
         if (data !== null) {
           try {
             metaSave.saves[metaSave.currentSave] = JSON.parse(atob(data));
-            Object.assign(player, metaSave.saves[metaSave.currentSave]);
-            saveGame();
+            saveGame(false);
+
+            location.reload();
           } catch (e) {
             alert(
               "It seems as though your save cannot be loaded! Please check the console for details!"
@@ -67,7 +68,7 @@ export const OPTION_DATA: {SAVING: OptionData[], OTHER: OptionData[]} = {
           metaSave.saves[metaSave.currentSave].modes
         );
 
-        saveGame();
+        saveGame(false);
         location.reload();
       },
       classes: {

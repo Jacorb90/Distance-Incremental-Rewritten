@@ -1,8 +1,8 @@
 import { player } from "@/main";
-import features, { addFeature, reloadData, signal } from "@/util/feature";
+import { addFeature, Feature, signal } from "@/util/feature";
 import { formatDistance } from "@/util/format";
+import { computed } from "@vue/reactivity";
 import Decimal, { DecimalSource } from "break_eternity.js";
-import { ref } from "vue";
 import { basics } from "../basics/basics";
 
 interface RocketData {
@@ -18,56 +18,57 @@ interface RocketActions {
   rocketUp: () => void;
 }
 
-addFeature<RocketData, RocketActions>("rockets", 1, {
+export const rockets: Feature<RocketData, RocketActions> = addFeature<
+  RocketData,
+  RocketActions
+>("rockets", 1, {
   unl: {
-    reached: () => Decimal.gte(player.distance, 1e6),
-    desc: () => "Reach " + formatDistance(1e6) + " to unlock Rockets.",
+    reached: computed(() => Decimal.gte(player.distance, 1e6)),
+    desc: computed(
+      () => "Reach " + formatDistance(1e6) + " to unlock Rockets."
+    ),
   },
 
   data: {
-    resetGain: 0,
-    nextAt: "Infinity",
-    effExp: 0,
-    effMult: 1,
-    maxVelMult: 1,
-    accMult: 1,
-  },
-
-  values: {
-    resetGain: () =>
+    resetGain: computed(() =>
       Decimal.div(player.distance, 1e6)
         .root(5)
         .times(Decimal.gte(player.distance, 1e6) ? 1.5 : 1)
-        .floor(),
+        .floor()
+    ),
 
-    nextAt: () =>
-      Decimal.add(rockets.value.data.resetGain, 1)
-        .div(Decimal.gte(rockets.value.data.resetGain, 1) ? 1.5 : 1)
+    nextAt: computed(() =>
+      Decimal.add(rockets.data.resetGain.value, 1)
+        .div(Decimal.gte(rockets.data.resetGain.value, 1) ? 1.5 : 1)
         .pow(5)
-        .times(1e6),
+        .times(1e6)
+    ),
 
-    effExp: () => Decimal.add(player.rockets, 1).log10(),
-    effMult: () => Decimal.div(player.rockets, 2).plus(1),
-    maxVelMult: () =>
-      Decimal.add(basics.value.data.preRocketMaxVelocity, 1)
+    effExp: computed(() => Decimal.add(player.rockets, 1).log10()),
+    effMult: computed(() => {
+      let eff = Decimal.div(player.rockets, 2).plus(1);
+      if (eff.gte(10)) eff = eff.times(10).sqrt();
+      return eff;
+    }),
+
+    maxVelMult: computed(() =>
+      Decimal.add(basics.data.preRocketMaxVelocity.value, 1)
         .log10()
         .plus(1)
-        .pow(rockets.value.data.effExp)
-        .times(rockets.value.data.effMult),
-    accMult: () =>
-      Decimal.add(basics.value.data.preRocketAccel, 1)
+        .pow(rockets.data.effExp.value)
+        .times(rockets.data.effMult.value)
+    ),
+
+    accMult: computed(() =>
+      Decimal.add(basics.data.preRocketAccel.value, 1)
         .log10()
         .plus(1)
-        .pow(rockets.value.data.effExp)
-        .times(rockets.value.data.effMult),
+        .pow(rockets.data.effExp.value)
+        .times(rockets.data.effMult.value)
+    ),
   },
 
   receptors: {
-    tick: (_) => {
-      reloadData(rockets.value, "resetGain");
-      reloadData(rockets.value, "nextAt");
-    },
-
     reset: (id) => {
       if (id >= 3) {
         player.rockets = 0;
@@ -77,7 +78,7 @@ addFeature<RocketData, RocketActions>("rockets", 1, {
 
   actions: {
     rocketUp: () => {
-      const gain = rockets.value.values.resetGain();
+      const gain = rockets.data.resetGain.value;
 
       if (Decimal.lt(gain, 1)) return;
 
@@ -87,5 +88,3 @@ addFeature<RocketData, RocketActions>("rockets", 1, {
     },
   },
 });
-
-export const rockets = ref(features.value.rockets);

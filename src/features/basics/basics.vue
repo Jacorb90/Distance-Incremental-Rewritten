@@ -4,20 +4,22 @@
     You have gone {{ formatDistance(player.distance) }}<br /><br />
     <span
       :style="{
-        color: Decimal.eq(player.velocity, basics.data.maxVelocity)
+        color: Decimal.eq(player.velocity, basics.data.maxVelocity.value)
           ? '#F77'
           : 'white',
       }"
       >[+{{ formatDistance(player.velocity) }}/s] [Max:
-      {{ formatDistance(basics.data.maxVelocity) }}/s]</span
+      {{ formatDistance(basics.data.maxVelocity.value) }}/s]</span
     >
     <br />
-    [+{{ formatDistance(basics.data.accel) }}/s<sup>2</sup>] <br /><br />
+    [+{{ formatDistance(basics.data.accel.value) }}/s<sup>2</sup>] <br /><br />
     <div class="flexRow">
       <button
         id="rank"
         class="btn"
-        :class="{ locked: Decimal.lt(player.distance, basics.data.rankReq) }"
+        :class="{
+          locked: Decimal.lt(player.distance, basics.data.rankReq.value),
+        }"
         @click="basics.actions.rankUp()"
       >
         <b>Rank {{ formatWhole(player.rank) }}</b
@@ -25,13 +27,13 @@
         Reset your journey, but
         {{ RANK_DESCS[Decimal.add(player.rank, 1).toNumber()] ?? "rank up." }}
         <br />
-        <b>Req: {{ formatDistance(basics.data.rankReq) }}</b>
+        <b>Req: {{ formatDistance(basics.data.rankReq.value) }}</b>
       </button>
 
       <button
         id="tier"
         class="btn"
-        :class="{ locked: Decimal.lt(player.rank, basics.data.tierReq) }"
+        :class="{ locked: Decimal.lt(player.rank, basics.data.tierReq.value) }"
         @click="basics.actions.tierUp()"
       >
         <b>Tier {{ formatWhole(player.tier) }}</b
@@ -39,7 +41,7 @@
         Reset your ranks, but
         {{ TIER_DESCS[Decimal.add(player.tier, 1).toNumber()] ?? "tier up." }}
         <br />
-        <b>Req: Rank {{ formatWhole(basics.data.tierReq) }}</b>
+        <b>Req: Rank {{ formatWhole(basics.data.tierReq.value) }}</b>
       </button>
     </div>
     <br />

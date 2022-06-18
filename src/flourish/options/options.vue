@@ -85,10 +85,7 @@ import { parseFunc, formatDistance } from "@/util/format";
 import { metaSave } from "@/main";
 
 function renameSpecificSave(id: number) {
-  if (metaSave.value === undefined) return;
-
-  metaSave.value.saves[id].saveName =
-    prompt("Type save name here:") ?? "Save #" + id;
+  metaSave.saves[id].saveName = prompt("Type save name here:") ?? "Save #" + id;
 }
 </script>
 

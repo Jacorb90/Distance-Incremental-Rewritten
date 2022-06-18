@@ -1,5 +1,5 @@
 import { player } from "@/main";
-import { Ref, ref } from "vue";
+import { ComputedRef } from "vue";
 
 type Signal = "tick" | "reset" | "load";
 
@@ -9,54 +9,33 @@ interface Receptors {
   load?: () => void;
 }
 
-export interface Feature<T, A = {}, S = { [key in keyof T]: () => T[key] }> {
+export interface Feature<
+  Data,
+  Actions = {},
+  ComputedData = { [key in keyof Data]: ComputedRef<Data[key]> }
+> {
   unl: {
-    reached: () => boolean;
-    desc: () => string;
+    reached: ComputedRef<boolean>;
+    desc: ComputedRef<string>;
   };
-  data: T;
-  values: S;
+  data: ComputedData;
   receptors: Receptors;
-  actions: A;
-  deferred?: (keyof T)[];
+  actions: Actions;
 }
 
-// ignore-next-line no-explicit-any
-const features: Ref<{ [key: string]: Feature<any, any> }> = ref({});
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const features: { [key: string]: Feature<any, any> } = {};
 const featureOrder: { [key: number]: string } = {};
 
 export function signal(sig: Signal, info: number) {
   if (sig === "load") {
     for (const i in featureOrder) {
-      features.value[featureOrder[i]].receptors[sig]?.();
+      features[featureOrder[i]].receptors[sig]?.();
     }
-    reloadAllFeatures();
   } else {
     for (const i in featureOrder) {
-      features.value[featureOrder[i]].receptors[sig]?.(info);
+      features[featureOrder[i]].receptors[sig]?.(info);
     }
-    if (sig === "reset") reloadAllFeatures();
-  }
-}
-
-export function reloadData<T, A>(feature: Feature<T, A>, name: keyof T) {
-  feature.data[name] = feature.values[name]();
-}
-
-export function reloadAllData<T, A>(feature: Feature<T, A>, deferred: boolean) {
-  for (const k in feature.data) {
-    if ((feature.deferred?.includes(k) ?? false) === deferred)
-      reloadData(feature, k);
-  }
-}
-
-export function reloadAllFeatures() {
-  for (const i in featureOrder) {
-    reloadAllData(features.value[featureOrder[i]], false);
-  }
-
-  for (const i in featureOrder) {
-    reloadAllData(features.value[featureOrder[i]], true);
   }
 }
 
@@ -65,15 +44,15 @@ export function addFeature<T, A>(
   index: number,
   feature: Feature<T, A>
 ): Feature<T, A> {
-  features.value[name] = feature;
+  features[name] = feature;
   featureOrder[index] = name;
-  return features.value[name] as Feature<T, A>;
+  return features[name] as Feature<T, A>;
 }
 
 export function updateUnlocks() {
   for (const i in featureOrder) {
     const key = featureOrder[i];
-    if (!player.featuresUnl.includes(key) && features.value[key].unl.reached())
+    if (!player.featuresUnl.includes(key) && features[key].unl.reached.value)
       player.featuresUnl.push(key);
   }
 }
@@ -81,8 +60,7 @@ export function updateUnlocks() {
 export function getUnlockDesc(): string {
   for (const i in featureOrder) {
     const key = featureOrder[i];
-    if (!player.featuresUnl.includes(key))
-      return features.value[key].unl.desc();
+    if (!player.featuresUnl.includes(key)) return features[key].unl.desc.value;
   }
 
   return "All features unlocked!";
