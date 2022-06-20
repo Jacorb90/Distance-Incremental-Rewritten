@@ -15,7 +15,9 @@ doNews();
 
 <style>
 #newsticker {
-  height: 18px;
+  height: 26px;
+  padding-top: 2px;
+  padding-bottom: 2px;
   width: 100%;
   background-color: hsl(0, 0%, 10%);
   border: 2px solid hsl(0, 0%, 30%);
@@ -35,8 +37,8 @@ doNews();
   display: inline-block;
   white-space: nowrap;
   color: white !important;
-  min-height: 18px;
-  max-height: 18px;
+  min-height: 26px;
+  max-height: 26px;
   transition-duration: 0s;
 }
 </style>

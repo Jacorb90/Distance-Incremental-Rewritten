@@ -85,6 +85,44 @@ const NEWSTICKER_DATA: NewsData[] = [
   { text: "This feature is definitely not a ripoff of anything else..." },
   { text: "This is not the 69th news ticker" },
   { text: "If you can see this, go back to playing the game" },
+  {
+    text: "There is a news ticker entry out there that has apparently tried to rick roll people, but it is in another game.",
+  },
+  { text: "What if you wanted to go to heaven, but god said (softcapped)" },
+  { text: "Softcapped: the game" },
+  { text: '"Gaming" - Danny DeVito' },
+  {
+    text: "Imagine doxxing yourself in a news ticker message? Couldn't be me.",
+  },
+  { text: '"But that\'s just a theory, a ____ theory!" - Matmat Patpat' },
+  { text: '"Nyesn\'t" - A meme man' },
+  {
+    text: "The most recent feature of Distance Incremental Rewritten is definitely not a ripoff of the original game.",
+  },
+  {
+    text: "I should make a mod of Antimatter Dimension that releases Reality before Hevipelle does...",
+  },
+  { text: "Kirb is still faster than you" },
+  {
+    text: 'Maybe I should\'ve named this "Distance Incremental: Ultra Deluxe"',
+  },
+  { text: "Imagine putting hotkeys in your game" },
+  { text: "News man go brrrrrrrrrrrrrrrrrrr" },
+  { text: "Am I getting paid for this?" },
+  {
+    text: "Are you the real Slim Shady? If so, get out of your chair as soon as you can.",
+  },
+  { text: "I'd say these memes are old, but I don't know any new ones." },
+  {
+    text: "Due to a recent influx of news stories, we have decided to make the news ticker (softcapped)",
+  },
+  {
+    text: '"I wonder if my lore will ever catch up to the most recent update?" - CRG',
+  },
+  { text: "This message has been (softcapped) so you can't re-" },
+  {
+    text: "Maybe try getting some distance in real life? It's just a suggestion...",
+  },
 
   // Distance-based Conditions
   {

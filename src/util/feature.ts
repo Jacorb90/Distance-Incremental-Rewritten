@@ -23,9 +23,8 @@ export interface Feature<
   actions: Actions;
 }
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-const features: { [key: string]: Feature<any, any> } = {};
-const featureOrder: { [key: number]: string } = {};
+const features: Record<string, Feature<unknown, unknown>> = {};
+const featureOrder: Record<number, string> = {};
 
 export function signal(sig: Signal, info: number) {
   if (sig === "load") {

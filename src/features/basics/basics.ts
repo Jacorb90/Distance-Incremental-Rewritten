@@ -1,30 +1,59 @@
 import { player } from "@/main";
 import { addFeature, Feature, signal } from "@/util/feature";
-import { computed } from "@vue/reactivity";
+import { format, formatWhole } from "@/util/format";
+import { computed, ComputedRef } from "@vue/reactivity";
 import Decimal, { DecimalSource } from "break_eternity.js";
+import { hasAch } from "../achs/achs";
 import { rockets } from "../rockets/rockets";
 
-export type RTDesc = Record<number, string>;
-
-export const RANK_DESCS: RTDesc = {
-  2: "increase Maximum Velocity by 1 m/s.",
-  3: "increase Acceleration and Maximum Velocity by 10% per Rank.",
-  4: "double Acceleration and decrease the Rank requirement base by 0.3.",
-  5: "triple Acceleration and Maximum Velocity.",
-  6: "double Accleration and Maximum Velocity, and decrease the Rank requirement base by 0.25.",
-  7: "increase Maximum Velocity by 10% per Rank.",
-  8: "increase Acceleration by 10% per Rank.",
-  10: "increase Acceleration by 50%.",
-  15: "double Acceleration",
+export const RANK_DESCS: Record<number, ComputedRef<string>> = {
+  2: computed(() => `increase Maximum Velocity by ${formatWhole(1)} m/s.`),
+  3: computed(
+    () =>
+      `increase Acceleration and Maximum Velocity by ${formatWhole(
+        10
+      )}% per Rank.`
+  ),
+  4: computed(
+    () =>
+      `double Acceleration and decrease the Rank requirement base by ${format(
+        0.3
+      )}.`
+  ),
+  5: computed(() => `triple Acceleration and Maximum Velocity.`),
+  6: computed(
+    () =>
+      `double Accleration and Maximum Velocity, and decrease the Rank requirement base by ${format(
+        0.25
+      )}.`
+  ),
+  7: computed(
+    () => `increase Maximum Velocity by ${formatWhole(10)}% per Rank.`
+  ),
+  8: computed(() => `increase Acceleration by ${formatWhole(10)}% per Rank.`),
+  10: computed(() => `increase Acceleration by ${formatWhole(50)}%.`),
+  15: computed(() => `double Acceleration`),
 };
 
-export const TIER_DESCS: RTDesc = {
-  1: "increase Acceleration by 0.03 m/s^2, and increase Maximum Velocity by 20%.",
-  2: "double Acceleration and quintuple Maximum Velocity if you are at least Rank 3.",
-  3: "double Maximum Velocity, and halve Rank requirement per Tier.",
-  4: "double Acceleration and Maximum Velocity per Tier.",
-  5: "double Acceleration and Maximum Velocity",
-  6: "triple Acceleration.",
+export const TIER_DESCS: Record<number, ComputedRef<string>> = {
+  1: computed(
+    () =>
+      `increase Acceleration by ${format(
+        0.03
+      )} m/s^2, and increase Maximum Velocity by ${formatWhole(20)}%.`
+  ),
+  2: computed(
+    () =>
+      `double Acceleration and quintuple Maximum Velocity if you are at least Rank ${formatWhole(
+        3
+      )}.`
+  ),
+  3: computed(
+    () => `double Maximum Velocity, and halve Rank requirement per Tier.`
+  ),
+  4: computed(() => `double Acceleration and Maximum Velocity per Tier.`),
+  5: computed(() => `double Acceleration and Maximum Velocity`),
+  6: computed(() => `triple Acceleration.`),
 };
 
 interface BasicData {
@@ -45,7 +74,7 @@ interface BasicActions {
 
 export const basics: Feature<BasicData, BasicActions> = addFeature(
   "basics",
-  0,
+  1,
   {
     unl: {
       reached: computed(() => true),
@@ -73,6 +102,10 @@ export const basics: Feature<BasicData, BasicActions> = addFeature(
         if (hasTier(5)) acc = Decimal.mul(acc, 2);
         if (hasTier(6)) acc = Decimal.mul(acc, 3);
 
+        if (hasAch(12)) acc = Decimal.mul(acc, 1.05);
+        if (hasAch(14)) acc = Decimal.mul(acc, 1.15);
+        if (hasAch(22)) acc = Decimal.mul(acc, 1.06);
+
         return acc;
       }),
       preRocketMaxVelocity: computed(() => {
@@ -90,6 +123,9 @@ export const basics: Feature<BasicData, BasicActions> = addFeature(
         if (hasTier(3)) vel = Decimal.mul(vel, 2);
         if (hasTier(4)) vel = Decimal.mul(vel, basics.data.tier3Reward.value);
         if (hasTier(5)) vel = Decimal.mul(vel, 2);
+
+        if (hasAch(14)) vel = Decimal.mul(vel, 1.15);
+        if (hasAch(21)) vel = Decimal.mul(vel, 1.05);
 
         return vel;
       }),
@@ -116,6 +152,8 @@ export const basics: Feature<BasicData, BasicActions> = addFeature(
         );
 
         if (hasTier(3)) req = Decimal.div(req, basics.data.tier3Reward.value);
+
+        if (hasAch(23)) req = Decimal.div(req, 1.05);
 
         return req;
       }),

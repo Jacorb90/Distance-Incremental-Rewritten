@@ -25,7 +25,10 @@
         <b>Rank {{ formatWhole(player.rank) }}</b
         ><br /><br />
         Reset your journey, but
-        {{ RANK_DESCS[Decimal.add(player.rank, 1).toNumber()] ?? "rank up." }}
+        {{
+          RANK_DESCS[Decimal.add(player.rank, 1).toNumber()]?.value ??
+          "rank up."
+        }}
         <br />
         <b>Req: {{ formatDistance(basics.data.rankReq.value) }}</b>
       </button>
@@ -39,7 +42,10 @@
         <b>Tier {{ formatWhole(player.tier) }}</b
         ><br /><br />
         Reset your ranks, but
-        {{ TIER_DESCS[Decimal.add(player.tier, 1).toNumber()] ?? "tier up." }}
+        {{
+          TIER_DESCS[Decimal.add(player.tier, 1).toNumber()]?.value ??
+          "tier up."
+        }}
         <br />
         <b>Req: Rank {{ formatWhole(basics.data.tierReq.value) }}</b>
       </button>

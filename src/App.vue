@@ -1,16 +1,20 @@
 <template>
   <div class="left">
-    <Basics />
-    <div>
-      <button
-        v-if="player.tab !== null"
-        @click="player.tab = null"
-        class="btn min"
-      >
-        Hide
-      </button>
-      <Options v-if="player.tab === 'Options'" />
-      <Rockets v-if="player.tab === 'Rockets'" />
+    <div class="scrollable">
+      <Basics />
+      <div>
+        <button
+          v-if="player.tab !== null"
+          @click="player.tab = null"
+          class="btn min"
+        >
+          Hide
+        </button>
+        <Options v-if="player.tab === 'Options'" />
+        <Stats v-if="player.tab === 'Stats'" />
+        <Achs v-if="player.tab === 'Achievements'" />
+        <Rockets v-if="player.tab === 'Rockets'" />
+      </div>
     </div>
   </div>
   <div class="right">
@@ -22,6 +26,8 @@
 import { load, player } from "./main";
 import Tabs from "./flourish/tabs/tabs.vue";
 import Options from "./flourish/options/options.vue";
+import Stats from "./flourish/other/stats.vue";
+import Achs from "./features/achs/achs.vue";
 import Basics from "./features/basics/basics.vue";
 import Rockets from "./features/rockets/rockets.vue";
 
@@ -38,6 +44,7 @@ load();
   transition-duration: 0.2s;
   cursor: default;
   user-select: none;
+  line-height: 1em;
 }
 
 body {
@@ -48,11 +55,18 @@ body {
   display: flex;
 }
 
+.scrollable {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overflow-x: hidden;
+  min-height: 150px;
+  max-height: 100vh;
+}
+
 .left {
   flex: 4;
-  overflow-y: auto;
-  overflow-x: hidden;
   min-height: 100vh;
+  height: 100vh;
 }
 
 .right {

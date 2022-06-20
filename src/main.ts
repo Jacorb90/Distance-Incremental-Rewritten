@@ -1,5 +1,6 @@
 import { createApp, reactive } from "vue";
 import App from "./App.vue";
+import { Quasar, Notify } from "quasar";
 import { checkNextNews, newsMovement } from "./flourish/newsticker/newsticker";
 import {
   loadSave,
@@ -11,6 +12,9 @@ import {
   versionControl,
 } from "./saveload";
 import { signal, updateUnlocks } from "./util/feature";
+import "@quasar/extras/material-icons/material-icons.css";
+import "quasar/src/css/index.sass";
+import { updateAchievements } from "./features/achs/achs";
 
 export const metaSave: MetaSave = reactive(startingMetaSave());
 export const player: Save = reactive(startingSave(0));
@@ -49,8 +53,18 @@ export function load() {
   gameLoop();
 
   setInterval(() => {
+    updateAchievements();
+  }, 1000);
+
+  setInterval(() => {
     if (player.opts.autoSave) saveGame();
   }, 5000);
 }
 
-createApp(App).mount("#app");
+const app = createApp(App);
+
+app.use(Quasar, {
+  plugins: { Notify },
+});
+
+app.mount("#app");

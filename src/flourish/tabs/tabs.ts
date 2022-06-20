@@ -5,13 +5,19 @@ import { StyleValue } from "vue";
 interface TabData {
   name: string;
   style?: StyleValue;
-  class?: { [key: string]: boolean };
+  class?: Record<string, boolean>;
   condition?: ComputedRef<boolean>;
 }
 
 const TAB_DATA: TabData[] = [
   {
     name: "Options",
+  },
+  {
+    name: "Stats",
+  },
+  {
+    name: "Achievements",
   },
   {
     name: "Rockets",

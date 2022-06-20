@@ -1,5 +1,13 @@
 # Changelog
 
+## α1.0.3
+
+- Fixed and optimized some more code stuff
+- Setup Quasar (what a lifesaver lol)
+- Implemented Stats tab
+- Implemented Achievements (ach 23 is currently not meant to be gotten)
+- Implemented Notifications (for saving, deleting saves, and getting achivements)
+
 ## α1.0.2
 
 - Migrated to Vite

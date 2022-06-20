@@ -1,6 +1,7 @@
 import { DecimalSource } from "break_eternity.js";
 import { toRaw } from "vue";
 import { metaSave, player } from "./main";
+import { Notify } from "quasar";
 
 export interface Version {
   alpha?: string;
@@ -18,7 +19,7 @@ interface OptData {
   hotkeys: boolean;
 }
 
-export interface Save {
+export type Save = {
   tab: string | null;
   version: Version;
   achs: number[];
@@ -35,13 +36,11 @@ export interface Save {
   tier: DecimalSource;
   rockets: DecimalSource;
   rocketFuel: DecimalSource;
-}
+};
 
 export interface MetaSave {
   currentSave: number;
-  saves: {
-    [key: number]: Save;
-  };
+  saves: Record<number, Save>;
 }
 
 const LOCALSTORAGE_NAME = "dist-inc-rewrite-go-brrrr";
@@ -65,7 +64,7 @@ export function startingSave(saveID: number, modes: string[] = []): Save {
   return {
     tab: null,
     version: {
-      alpha: "1.0.2",
+      alpha: "1.0.3",
     },
     achs: [],
     saveID,
@@ -117,6 +116,13 @@ export function loadSave(): MetaSave {
 export function saveGame(setMeta = true) {
   if (setMeta) metaSave.saves[metaSave.currentSave] = toRaw(player);
   localStorage.setItem(LOCALSTORAGE_NAME, btoa(JSON.stringify(metaSave)));
+
+  Notify.create({
+    message: "Game saved!",
+    position: "top-right",
+    type: "positive",
+    timeout: 1000,
+  });
 }
 
 export function loadSpecificSave(id: number) {
@@ -134,6 +140,13 @@ export function deleteSpecificSave(id: number) {
     metaSave.currentSave = Math.max(metaSave.currentSave - 1, 0);
     loadSpecificSave(metaSave.currentSave);
   }
+
+  Notify.create({
+    message: "Save deleted!",
+    position: "top-right",
+    type: "negative",
+    timeout: 2000,
+  });
 }
 
 export function getVersionDisplay(v: Version) {

@@ -2,7 +2,7 @@
   <br /><br />
   <div class="flexRow">
     <div class="flexCol">
-      <h1>Saving<br /><br /></h1>
+      <h3>Saving<br /><br /></h3>
       <div
         class="flexRow"
         v-for="rowID in Math.ceil(OPTION_DATA.SAVING.length / 2)"
@@ -29,7 +29,7 @@
     </div>
 
     <div class="flexCol">
-      <h1>Other<br /><br /></h1>
+      <h3>Other<br /><br /></h3>
       <div
         class="flexRow"
         v-for="rowID in Math.ceil(OPTION_DATA.OTHER.length / 2)"
@@ -93,11 +93,13 @@ function renameSpecificSave(id: number) {
 .flexRow {
   display: flex;
   flex-flow: row wrap;
+  justify-content: space-around;
 }
 
 .flexCol {
   display: flex;
   flex-flow: column wrap;
+  justify-content: space-around;
 }
 </style>
 
@@ -134,5 +136,14 @@ function renameSpecificSave(id: number) {
   background-color: rgb(40, 40, 40);
   border: rgb(60, 60, 80) 5px solid;
   z-index: 1001;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: bold;
 }
 </style>

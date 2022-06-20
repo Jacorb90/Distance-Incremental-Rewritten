@@ -6,7 +6,7 @@ interface OptionData {
   text: string | (() => string);
   action: () => void;
   style?: StyleValue;
-  classes?: { [key: string]: boolean };
+  classes?: Record<string, boolean>;
 }
 
 export const loadModalOpen = ref(false);
