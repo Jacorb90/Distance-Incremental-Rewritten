@@ -338,7 +338,7 @@ export function format(
 
     default: // Scientific (2)
       if (d.lt(1e3)) return dPlaces(d, places);
-      else if (d.lt(1e16)) d.toExponential(places);
+      else if (d.lt(1e16)) return d.toExponential(places);
       return d.toStringWithDecimalPlaces(places);
   }
 }

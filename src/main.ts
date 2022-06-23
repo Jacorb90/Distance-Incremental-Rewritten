@@ -11,10 +11,9 @@ import {
   startingSave,
   versionControl,
 } from "./saveload";
-import { signal, updateUnlocks } from "./util/feature";
+import { signal, watchUnlocks } from "./util/feature";
 import "@quasar/extras/material-icons/material-icons.css";
 import "quasar/src/css/index.sass";
-import { updateAchievements } from "./features/achs/achs";
 
 export const metaSave: MetaSave = reactive(startingMetaSave());
 export const player: Save = reactive(startingSave(0));
@@ -22,11 +21,9 @@ export const player: Save = reactive(startingSave(0));
 export function gameLoop() {
   requestAnimationFrame(gameLoop);
 
-  const currentTime = new Date().getTime();
+  const currentTime = Date.now();
   const diff = (currentTime - player.lastTime) / 1000;
   player.lastTime = currentTime;
-
-  updateUnlocks();
 
   signal("tick", diff);
 
@@ -37,8 +34,6 @@ export function gameLoop() {
 }
 
 export function load() {
-  document.title = "Distance Incremental Rewritten";
-
   Object.assign(metaSave, loadSave());
   Object.assign(
     player,
@@ -46,18 +41,15 @@ export function load() {
   );
   versionControl();
 
-  if (!player.opts.offlineTime) player.lastTime = new Date().getTime();
+  if (!player.opts.offlineTime) player.lastTime = Date.now();
 
+  watchUnlocks();
   signal("load", 0);
 
   gameLoop();
 
   setInterval(() => {
-    updateAchievements();
-  }, 1000);
-
-  setInterval(() => {
-    if (player.opts.autoSave) saveGame();
+    if (player.opts.autoSave) saveGame(true, true);
   }, 5000);
 }
 

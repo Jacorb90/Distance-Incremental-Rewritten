@@ -30,8 +30,8 @@
 import { ACH_NAMES, achs, hasAch } from "./achs";
 import Tooltip from "@/components/Tooltip.vue";
 
-const ACH_ROWS = 2;
-const ACH_COLS = 4;
+const ACH_ROWS = 3;
+const ACH_COLS = 5;
 </script>
 
 <style scoped>

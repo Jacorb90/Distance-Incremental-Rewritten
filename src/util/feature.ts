@@ -1,5 +1,5 @@
 import { player } from "@/main";
-import { ComputedRef } from "vue";
+import { ComputedRef, watch } from "vue";
 
 type Signal = "tick" | "reset" | "load";
 
@@ -24,41 +24,36 @@ export interface Feature<
 }
 
 const features: Record<string, Feature<unknown, unknown>> = {};
-const featureOrder: Record<number, string> = {};
 
 export function signal(sig: Signal, info: number) {
   if (sig === "load") {
-    for (const i in featureOrder) {
-      features[featureOrder[i]].receptors[sig]?.();
+    for (const key in features) {
+      features[key].receptors[sig]?.();
     }
   } else {
-    for (const i in featureOrder) {
-      features[featureOrder[i]].receptors[sig]?.(info);
+    for (const key in features) {
+      features[key].receptors[sig]?.(info);
     }
   }
 }
 
-export function addFeature<T, A>(
-  name: string,
-  index: number,
-  feature: Feature<T, A>
-): Feature<T, A> {
+export function addFeature<T, A>(name: string, feature: Feature<T, A>) {
   features[name] = feature;
-  featureOrder[index] = name;
+
   return features[name] as Feature<T, A>;
 }
 
-export function updateUnlocks() {
-  for (const i in featureOrder) {
-    const key = featureOrder[i];
-    if (!player.featuresUnl.includes(key) && features[key].unl.reached.value)
-      player.featuresUnl.push(key);
+export function watchUnlocks() {
+  for (const key in features) {
+    watch(features[key].unl.reached, (reached) => {
+      if (!player.featuresUnl.includes(key) && reached)
+        player.featuresUnl.push(key);
+    });
   }
 }
 
-export function getUnlockDesc(): string {
-  for (const i in featureOrder) {
-    const key = featureOrder[i];
+export function getUnlockDesc() {
+  for (const key in features) {
     if (!player.featuresUnl.includes(key)) return features[key].unl.desc.value;
   }
 

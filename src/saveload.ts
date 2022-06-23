@@ -64,7 +64,7 @@ export function startingSave(saveID: number, modes: string[] = []): Save {
   return {
     tab: null,
     version: {
-      alpha: "1.0.3",
+      alpha: "1.1",
     },
     achs: [],
     saveID,
@@ -79,7 +79,7 @@ export function startingSave(saveID: number, modes: string[] = []): Save {
       hotkeys: true,
     },
     modes,
-    lastTime: new Date().getTime(),
+    lastTime: Date.now(),
     timePlayed: 0,
     featuresUnl: [],
     distance: 0,
@@ -113,16 +113,19 @@ export function loadSave(): MetaSave {
   }
 }
 
-export function saveGame(setMeta = true) {
+export function saveGame(setMeta = true, auto = false) {
   if (setMeta) metaSave.saves[metaSave.currentSave] = toRaw(player);
   localStorage.setItem(LOCALSTORAGE_NAME, btoa(JSON.stringify(metaSave)));
 
-  Notify.create({
-    message: "Game saved!",
-    position: "top-right",
-    type: "positive",
-    timeout: 1000,
-  });
+  if (!auto) {
+    Notify.create({
+      message: "Game saved!",
+      position: "top-right",
+      type: "positive",
+      timeout: 1000,
+      badgeStyle: "opacity: 0;",
+    });
+  }
 }
 
 export function loadSpecificSave(id: number) {
@@ -146,6 +149,7 @@ export function deleteSpecificSave(id: number) {
     position: "top-right",
     type: "negative",
     timeout: 2000,
+    badgeStyle: "opacity: 0;",
   });
 }
 
