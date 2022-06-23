@@ -4,6 +4,7 @@ import { format, formatWhole } from "@/util/format";
 import { computed, ComputedRef } from "@vue/reactivity";
 import Decimal, { DecimalSource } from "break_eternity.js";
 import { hasAch } from "../achs/achs";
+import { rocketFuel } from "../rocketFuel/rocketFuel";
 import { rockets } from "../rockets/rockets";
 
 export const RANK_DESCS: Record<number, ComputedRef<string>> = {
@@ -147,7 +148,7 @@ export const basics: Feature<BasicData, BasicActions> = addFeature("basics", {
 
       if (hasTier(3)) req = Decimal.div(req, basics.data.tier3Reward.value);
 
-      req = Decimal.div(req, rockets.data.rfEff2.value);
+      req = Decimal.div(req, rocketFuel.data.eff2.value);
 
       if (hasAch(23)) req = Decimal.div(req, 1.05);
 

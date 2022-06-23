@@ -1,9 +1,16 @@
 # Changelog
 
+## α1.1.1
+
+- Separated Rocket Fuel into its own feature (so it has unlock text)
+- Added notification on export
+- Made achievement and feature watchers immediate (so they run on load in addition to on value change)
+
 ## α1.1
 
 - Implemented Rocket Fuel
 - Implemented (softcapped)
+- Buffed the Rocket gain formula significantly
 - Various bug fixes
 
 ## α1.0.3

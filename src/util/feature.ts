@@ -45,10 +45,14 @@ export function addFeature<T, A>(name: string, feature: Feature<T, A>) {
 
 export function watchUnlocks() {
   for (const key in features) {
-    watch(features[key].unl.reached, (reached) => {
-      if (!player.featuresUnl.includes(key) && reached)
-        player.featuresUnl.push(key);
-    });
+    watch(
+      features[key].unl.reached,
+      (reached) => {
+        if (!player.featuresUnl.includes(key) && reached)
+          player.featuresUnl.push(key);
+      },
+      { immediate: true }
+    );
   }
 }
 

@@ -1,5 +1,6 @@
 import { player, metaSave } from "@/main";
 import { saveGame, startingSave } from "@/saveload";
+import { Notify } from "quasar";
 import { ref, StyleValue } from "vue";
 
 interface OptionData {
@@ -54,6 +55,14 @@ export const OPTION_DATA: {SAVING: OptionData[], OTHER: OptionData[]} = {
             "It seems as though your save cannot be exported! Please check the console for details!"
           );
           console.error(e);
+        });
+
+        Notify.create({
+          message: "Export successful!",
+          position: "top-right",
+          type: "info",
+          timeout: 1500,
+          badgeStyle: "opacity: 0;",
         });
       },
     },

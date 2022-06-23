@@ -136,21 +136,25 @@ export const achs: Feature<AchData, {}> = addFeature("achs", {
   receptors: {
     load: () => {
       ACH_IDS.forEach((i) =>
-        watch(achs.data[i], (data) => {
-          if (data.unl && !player.achs.includes(i)) {
-            player.achs.push(i);
+        watch(
+          achs.data[i],
+          (data) => {
+            if (data.unl && !player.achs.includes(i)) {
+              player.achs.push(i);
 
-            Notify.create({
-              message: ACH_NAMES[i],
-              caption: "Achievement gotten!",
-              position: "top-right",
-              icon: "emoji_events",
-              color: "warning",
-              timeout: 1500,
-              badgeStyle: "opacity: 0;",
-            });
-          }
-        })
+              Notify.create({
+                message: ACH_NAMES[i],
+                caption: "Achievement gotten!",
+                position: "top-right",
+                icon: "emoji_events",
+                color: "warning",
+                timeout: 1500,
+                badgeStyle: "opacity: 0;",
+              });
+            }
+          },
+          { immediate: true }
+        )
       );
     },
   },
