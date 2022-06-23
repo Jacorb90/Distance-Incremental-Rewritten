@@ -1,5 +1,11 @@
 # Changelog
 
+## α1.1
+
+- Implemented Rocket Fuel
+- Implemented (softcapped)
+- Various bug fixes
+
 ## α1.0.3
 
 - Fixed and optimized some more code stuff
