@@ -1,5 +1,5 @@
 import { player, metaSave } from "@/main";
-import { saveGame, startingSave } from "@/saveload";
+import { saveGame, startingSave } from "@/util/saveload";
 import { Notify } from "quasar";
 import { ref, StyleValue } from "vue";
 
@@ -37,9 +37,13 @@ export const OPTION_DATA: {SAVING: OptionData[], OTHER: OptionData[]} = {
 
             location.reload();
           } catch (e) {
-            alert(
-              "It seems as though your save cannot be loaded! Please check the console for details!"
-            );
+            Notify.create({
+              message: "Import Error!",
+              position: "top-right",
+              type: "danger",
+              timeout: 5000,
+              badgeStyle: "opacity: 0;",
+            });
             console.error(e);
           }
         }
@@ -51,9 +55,13 @@ export const OPTION_DATA: {SAVING: OptionData[], OTHER: OptionData[]} = {
         const data = btoa(JSON.stringify(metaSave.saves[metaSave.currentSave]));
 
         navigator.clipboard.writeText(data).catch((e) => {
-          alert(
-            "It seems as though your save cannot be exported! Please check the console for details!"
-          );
+          Notify.create({
+            message: "Export Error!",
+            position: "top-right",
+            type: "danger",
+            timeout: 5000,
+            badgeStyle: "opacity: 0;",
+          });
           console.error(e);
         });
 

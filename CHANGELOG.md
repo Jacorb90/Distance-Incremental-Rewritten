@@ -1,5 +1,13 @@
 # Changelog
 
+## α1.1.2
+
+- Rebalanced a bunch of stuff from Rockets onward (and thus removed the Rocket effect softcap)
+- Added a few new Rank/Tier rewards (Rank 12 and Tier 7)
+- Fixed Feature ordering problem
+- Added various error notifications
+- Added "extensions" to features (to allow more data to be attached to each feature if needed later)
+
 ## α1.1.1
 
 - Separated Rocket Fuel into its own feature (so it has unlock text)

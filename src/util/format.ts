@@ -163,7 +163,7 @@ function nPlaces(
 }
 
 export function formatWhole(num: DecimalSource) {
-  return format(num, new Decimal(num).floor().min(4).toNumber());
+  return format(num, Decimal.log10(num).floor().min(4).toNumber());
 }
 
 export function format(

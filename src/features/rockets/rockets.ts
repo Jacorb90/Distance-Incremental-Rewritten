@@ -1,7 +1,6 @@
 import { player } from "@/main";
 import { addFeature, Feature, signal } from "@/util/feature";
 import { formatDistance } from "@/util/format";
-import { SOFTCAPS, createSoftcap } from "@/util/softcapped";
 import { computed } from "@vue/reactivity";
 import Decimal from "break_eternity.js";
 import { basics } from "../basics/basics";
@@ -18,13 +17,8 @@ interface RocketData {
   accMult: Decimal;
 }
 
-export const ROCKET_EFF_EXP_SOFTCAP = createSoftcap({
-  softcap: SOFTCAPS.CBRT,
-  start: 3.5,
-});
-
 export const rockets: Feature<RocketData, { rocketUp: () => void }> =
-  addFeature("rockets", {
+  addFeature("rockets", 2, {
     unl: {
       reached: computed(() => Decimal.gte(player.distance, 1e6)),
       desc: computed(() => `Reach ${formatDistance(1e6)} to unlock Rockets.`),
@@ -49,20 +43,23 @@ export const rockets: Feature<RocketData, { rocketUp: () => void }> =
           .times(rockets.data.startingReq.value)
       ),
 
-      effExp: computed(() => {
-        const exp = Decimal.mul(player.rockets, rocketFuel.data.eff1.value)
+      effExp: computed(() =>
+        Decimal.mul(player.rockets, rocketFuel.data.eff1.value)
           .plus(1)
           .log10()
-          .times(rocketFuel.data.eff4.value);
-        return ROCKET_EFF_EXP_SOFTCAP.apply(exp);
-      }),
-      effMult: computed(() => {
-        let eff = Decimal.mul(player.rockets, rocketFuel.data.eff1.value)
-          .div(2)
-          .plus(1);
-        if (eff.gte(10)) eff = eff.times(10).sqrt();
-        return eff;
-      }),
+          .plus(Decimal.gt(player.rockets, 0) ? 0.2 : 0)
+          .sqrt()
+          .times(1.5)
+          .times(rocketFuel.data.eff4.value)
+      ),
+      effMult: computed(() =>
+        Decimal.mul(player.rockets, rocketFuel.data.eff1.value)
+          .plus(1)
+          .sqrt()
+          .times(2.5)
+          .sub(2)
+          .max(1)
+      ),
 
       maxVelMult: computed(() =>
         Decimal.add(basics.data.preRocketMaxVelocity.value, 1)

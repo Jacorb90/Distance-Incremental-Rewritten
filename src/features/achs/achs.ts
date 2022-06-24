@@ -37,7 +37,7 @@ export const ACH_NAMES: Record<number, string> = {
 
 const ACH_IDS = Object.keys(ACH_NAMES).map(Number);
 
-export const achs: Feature<AchData, {}> = addFeature("achs", {
+export const achs: Feature<AchData, {}> = addFeature("achs", 0, {
   unl: {
     reached: computed(() => true),
     desc: computed(() => ""),

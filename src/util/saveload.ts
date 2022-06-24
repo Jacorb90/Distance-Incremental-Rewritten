@@ -1,6 +1,6 @@
 import { DecimalSource } from "break_eternity.js";
 import { toRaw } from "vue";
-import { metaSave, player } from "./main";
+import { metaSave, player } from "../main";
 import { Notify } from "quasar";
 
 export interface Version {
@@ -64,7 +64,7 @@ export function startingSave(saveID: number, modes: string[] = []): Save {
   return {
     tab: null,
     version: {
-      alpha: "1.1.1",
+      alpha: "1.1.2",
     },
     achs: [],
     saveID,
@@ -105,9 +105,13 @@ export function loadSave(): MetaSave {
     try {
       return JSON.parse(atob(data));
     } catch (e) {
-      alert(
-        "It seems as though your save cannot be loaded! Please check the console for details!"
-      );
+      Notify.create({
+        message: "Load Error!",
+        position: "top-right",
+        type: "danger",
+        timeout: 5000,
+        badgeStyle: "opacity: 0;",
+      });
       throw e;
     }
   }

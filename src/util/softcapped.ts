@@ -7,6 +7,11 @@ interface SoftcapData {
   start: DecimalSource;
 }
 
+export interface CreatedSoftcap {
+  apply: (value: Decimal) => Decimal;
+  display: (value: Decimal) => "" | "(softcapped)";
+}
+
 export const SCG = {
   DIV(factor: DecimalSource): Softcap {
     return (value, start) =>

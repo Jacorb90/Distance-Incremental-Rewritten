@@ -80,7 +80,7 @@
 
 <script setup lang="ts">
 import { OPTION_DATA, loadModalOpen } from "./options";
-import { loadSpecificSave, deleteSpecificSave } from "@/saveload";
+import { loadSpecificSave, deleteSpecificSave } from "@/util/saveload";
 import { parseFunc, formatDistance } from "@/util/format";
 import { metaSave } from "@/main";
 

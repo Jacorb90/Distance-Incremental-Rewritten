@@ -76,7 +76,7 @@ const NEWSTICKER_DATA: NewsData[] = [
   },
   { text: '"Ya like jazz?" - BBB' },
   {
-    text: "Remember to export often! If you happen to delete your search history (for ANY reason), the game's saves will be deleted too!",
+    text: "Remember to export often! If you happen to destroy your computer (for ANY reason), the game's saves will be deleted too!",
   },
   { text: "Gotta wonder what you're using to travel this far" },
   {
@@ -122,6 +122,19 @@ const NEWSTICKER_DATA: NewsData[] = [
   { text: "This message has been (softcapped) so you can't re-" },
   {
     text: "Maybe try getting some distance in real life? It's just a suggestion...",
+  },
+  {
+    text: "This news ticker is both lying to you and telling the absolute truth at the same time.",
+  },
+  { text: "What does uni even stand for? University?" },
+  {
+    text: "(softcapped) is the new (softcapped), because new ideas are (softcapped).",
+  },
+  {
+    text: "It seems I'm too late to implement egg as the next mechanic, Void did it first.",
+  },
+  {
+    text: "We are out of news, so we'll just start repeating old news and hope nobody notices... oop-",
   },
 
   // Distance-based Conditions
@@ -190,6 +203,10 @@ const NEWSTICKER_DATA: NewsData[] = [
   {
     text: "Weren't we already using those?",
     condition: () => Decimal.gt(player.rockets, 0),
+  },
+  {
+    text: "Rocket Fuel is the best mechanic of the game, but only in the original.",
+    condition: () => Decimal.gt(player.rocketFuel, 0),
   },
 ];
 

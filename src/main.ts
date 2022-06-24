@@ -10,7 +10,7 @@ import {
   startingMetaSave,
   startingSave,
   versionControl,
-} from "./saveload";
+} from "./util/saveload";
 import { signal, watchUnlocks } from "./util/feature";
 import "@quasar/extras/material-icons/material-icons.css";
 import "quasar/src/css/index.sass";

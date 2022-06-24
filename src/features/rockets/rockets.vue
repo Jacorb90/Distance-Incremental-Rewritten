@@ -20,11 +20,7 @@
         Rocket Effect: (log(x+1)+1)<sup>{{
           format(rockets.data.effExp.value)
         }}</sup>
-        &times; {{ format(rockets.data.effMult.value) }}
-        <span class="softcapped">{{
-          ROCKET_EFF_EXP_SOFTCAP.display(rockets.data.effExp.value)
-        }}</span
-        ><br /><br />
+        &times; {{ format(rockets.data.effMult.value) }} <br /><br />
 
         Maximum Velocity: {{ format(rockets.data.maxVelMult.value) }}x<br />
         Acceleration: {{ format(rockets.data.accMult.value) }}x<br /><br />
@@ -41,7 +37,7 @@
 import { formatWhole, format, formatDistance } from "@/util/format";
 import Decimal from "break_eternity.js";
 import { player } from "@/main";
-import { rockets, ROCKET_EFF_EXP_SOFTCAP } from "./rockets";
+import { rockets } from "./rockets";
 import RocketFuel from "../rocketFuel/rocketFuel.vue";
 </script>
 

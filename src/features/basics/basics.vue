@@ -66,7 +66,7 @@ import { player } from "@/main";
 import { basics, RANK_DESCS, TIER_DESCS } from "./basics";
 import NewsTicker from "@/flourish/newsticker/newsticker.vue";
 import Decimal from "break_eternity.js";
-import { getVersionDisplay } from "@/saveload";
+import { getVersionDisplay } from "@/util/saveload";
 import { getUnlockDesc } from "@/util/feature";
 </script>
 
