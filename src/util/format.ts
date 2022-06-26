@@ -1,5 +1,7 @@
-import Decimal, { DecimalSource } from "break_eternity.js";
+import Decimal from "break_eternity.js";
 import { player } from "@/main";
+
+import type { DecimalSource } from "break_eternity.js";
 
 export const DISTANCES = {
   m: 1,
@@ -338,7 +340,7 @@ export function format(
 
     default: // Scientific (2)
       if (d.lt(1e3)) return dPlaces(d, places);
-      else if (d.lt(1e16)) return d.toExponential(places);
+      else if (d.lt(1e16)) return d.toExponential(places).replaceAll("+", "");
       return d.toStringWithDecimalPlaces(places);
   }
 }

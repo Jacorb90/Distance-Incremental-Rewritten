@@ -1,6 +1,8 @@
 import { player } from "@/main";
-import { computed, ComputedRef } from "@vue/reactivity";
-import { StyleValue } from "vue";
+import { computed } from "@vue/reactivity";
+
+import type { ComputedRef } from "@vue/reactivity";
+import type { StyleValue } from "vue";
 
 interface TabData {
   name: string;

@@ -1,10 +1,12 @@
 import { player } from "@/main";
-import { addFeature, Feature, signal } from "@/util/feature";
+import { addFeature, signal } from "@/util/feature";
 import { formatDistance } from "@/util/format";
 import { computed } from "@vue/reactivity";
 import Decimal from "break_eternity.js";
 import { basics } from "../basics/basics";
 import { rocketFuel } from "../rocketFuel/rocketFuel";
+
+import type { Feature } from "@/util/feature";
 
 interface RocketData {
   startingReq: Decimal;
@@ -18,7 +20,7 @@ interface RocketData {
 }
 
 export const rockets: Feature<RocketData, { rocketUp: () => void }> =
-  addFeature("rockets", 2, {
+  addFeature("rockets", 3, {
     unl: {
       reached: computed(() => Decimal.gte(player.distance, 1e6)),
       desc: computed(() => `Reach ${formatDistance(1e6)} to unlock Rockets.`),

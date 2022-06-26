@@ -1,6 +1,7 @@
 import { player } from "@/main";
-import { ComputedRef, watch } from "vue";
-import { CreatedSoftcap } from "./softcapped";
+import { watch } from "vue";
+
+import type { ComputedRef } from "vue";
 
 type Signal = "tick" | "reset" | "load";
 
@@ -26,12 +27,16 @@ export type Feature<
 } & FurtherOptions;
 
 const features: Record<string, Feature<unknown, unknown>> = {};
-const featureOrder: string[] = [];
+const featureOrder: Record<number, string> = {};
 
 export function signal(sig: Signal, info: number) {
-  if (sig === "load")
-    featureOrder.forEach((key) => features[key].receptors[sig]?.());
-  else featureOrder.forEach((key) => features[key].receptors[sig]?.(info));
+  if (sig === "load") {
+    for (const index in featureOrder)
+      features[featureOrder[index]].receptors[sig]?.();
+  } else {
+    for (const index in featureOrder)
+      features[featureOrder[index]].receptors[sig]?.(info);
+  }
 }
 
 export function addFeature<T, A, FO>(
@@ -46,7 +51,8 @@ export function addFeature<T, A, FO>(
 }
 
 export function watchUnlocks() {
-  featureOrder.forEach((key) => {
+  for (const index in featureOrder) {
+    const key = featureOrder[index];
     watch(
       features[key].unl.reached,
       (reached) => {
@@ -55,11 +61,12 @@ export function watchUnlocks() {
       },
       { immediate: true }
     );
-  });
+  }
 }
 
 export function getUnlockDesc() {
-  for (const key of featureOrder) {
+  for (const index in featureOrder) {
+    const key = featureOrder[index];
     if (!player.featuresUnl.includes(key)) return features[key].unl.desc.value;
   }
 

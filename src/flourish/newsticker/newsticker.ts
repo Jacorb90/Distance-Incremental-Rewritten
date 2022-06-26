@@ -1,7 +1,9 @@
 import { player } from "@/main";
 import { DISTANCES, parseFunc } from "@/util/format";
 import Decimal from "break_eternity.js";
-import { Ref, ref } from "vue";
+import { ref } from "vue";
+
+import type { Ref } from "vue";
 
 interface NewsData {
   text: string | (() => string);

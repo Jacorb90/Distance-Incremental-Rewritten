@@ -1,7 +1,12 @@
 <template>
   <br /><br />
   <div class="flexRow">
-    <div style="border: 1px solid white">
+    <div
+      v-if="
+        Object.keys(RANK_DESCS).some((req) => Decimal.gte(player.rank, req))
+      "
+      style="border: 1px solid white"
+    >
       <div
         style="
           border-top: 1px solid white;
@@ -33,7 +38,12 @@
       </div>
     </div>
 
-    <div style="border: 1px solid white">
+    <div
+      v-if="
+        Object.keys(TIER_DESCS).some((req) => Decimal.gte(player.tier, req))
+      "
+      style="border: 1px solid white"
+    >
       <div
         style="
           border-top: 1px solid white;

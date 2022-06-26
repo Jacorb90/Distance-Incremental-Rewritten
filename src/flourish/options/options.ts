@@ -1,7 +1,9 @@
 import { player, metaSave } from "@/main";
 import { saveGame, startingSave } from "@/util/saveload";
 import { Notify } from "quasar";
-import { ref, StyleValue } from "vue";
+import { ref } from "vue";
+
+import type { StyleValue } from "vue";
 
 interface OptionData {
   text: string | (() => string);

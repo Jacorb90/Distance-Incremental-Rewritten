@@ -1,10 +1,12 @@
 import { player } from "@/main";
-import { addFeature, Feature } from "@/util/feature";
+import { addFeature } from "@/util/feature";
 import { format, formatDistance, formatWhole } from "@/util/format";
 import { computed } from "@vue/reactivity";
 import { Notify } from "quasar";
 import Decimal from "break_eternity.js";
 import { watch } from "vue";
+
+import type { Feature } from "@/util/feature";
 
 type AchData = Record<
   number,
@@ -37,7 +39,7 @@ export const ACH_NAMES: Record<number, string> = {
 
 const ACH_IDS = Object.keys(ACH_NAMES).map(Number);
 
-export const achs: Feature<AchData, {}> = addFeature("achs", 0, {
+export const achs: Feature<AchData, {}> = addFeature("achs", 1, {
   unl: {
     reached: computed(() => true),
     desc: computed(() => ""),
@@ -164,4 +166,8 @@ export const achs: Feature<AchData, {}> = addFeature("achs", 0, {
 
 export function hasAch(id: number) {
   return player.achs.includes(id);
+}
+
+export function getAchCount() {
+  return player.achs.length;
 }

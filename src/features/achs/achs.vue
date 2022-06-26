@@ -1,5 +1,11 @@
 <template>
-  <br /><br /><br /><br /><br />
+  <br /><br /><br />
+  <q-banner class="bg-blue-10 text-white">
+    <h6>
+      Achievements: {{ formatWhole(getAchCount()) }} /
+      {{ formatWhole(Object.keys(ACH_NAMES).length) }}
+    </h6> </q-banner
+  ><br /><br />
   <table>
     <tbody>
       <tr v-for="row in ACH_ROWS" :key="row">
@@ -27,7 +33,8 @@
 </template>
 
 <script setup lang="ts">
-import { ACH_NAMES, achs, hasAch } from "./achs";
+import { ACH_NAMES, achs, hasAch, getAchCount } from "./achs";
+import { formatWhole } from "@/util/format";
 import Tooltip from "@/components/Tooltip.vue";
 
 const ACH_ROWS = 3;

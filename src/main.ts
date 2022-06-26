@@ -4,8 +4,6 @@ import { Quasar, Notify } from "quasar";
 import { checkNextNews, newsMovement } from "./flourish/newsticker/newsticker";
 import {
   loadSave,
-  MetaSave,
-  Save,
   saveGame,
   startingMetaSave,
   startingSave,
@@ -14,6 +12,8 @@ import {
 import { signal, watchUnlocks } from "./util/feature";
 import "@quasar/extras/material-icons/material-icons.css";
 import "quasar/src/css/index.sass";
+
+import type { Save, MetaSave } from "./util/saveload";
 
 export const metaSave: MetaSave = reactive(startingMetaSave());
 export const player: Save = reactive(startingSave(0));

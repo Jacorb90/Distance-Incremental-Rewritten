@@ -1,8 +1,10 @@
 import { player } from "@/main";
-import { addFeature, Feature } from "@/util/feature";
+import { addFeature } from "@/util/feature";
 import { formatWhole } from "@/util/format";
 import { computed } from "@vue/reactivity";
 import Decimal from "break_eternity.js";
+
+import type { Feature } from "@/util/feature";
 
 interface RocketFuelData {
   cost: Decimal;
@@ -13,7 +15,7 @@ interface RocketFuelData {
 }
 
 export const rocketFuel: Feature<RocketFuelData, { fuelUp: () => void }> =
-  addFeature("rocketFuel", 3, {
+  addFeature("rocketFuel", 4, {
     unl: {
       reached: computed(() => Decimal.gte(player.rockets, 10)),
       desc: computed(

@@ -8,5 +8,8 @@ export default defineConfig({
     vue({ template: { transformAssetUrls } }),
     quasar({ sassVariables: "src/quasar-variables.sass" }),
   ],
-  base: "./", //process.env.NODE_ENV === "production" ? "/Distance-Incremental-Rewritten/" : "/",
+  base: "./",
+  build: {
+    sourcemap: true,
+  },
 });

@@ -1,5 +1,11 @@
 # Changelog
 
+## α1.1.3
+
+- Added more achievement display stuff
+- Made stats tables hide when they have no entries
+- Various code improvements
+
 ## α1.1.2
 
 - Rebalanced a bunch of stuff from Rockets onward (and thus removed the Rocket effect softcap)

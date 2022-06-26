@@ -1,4 +1,6 @@
-import Decimal, { DecimalSource } from "break_eternity.js";
+import Decimal from "break_eternity.js";
+
+import type { DecimalSource } from "break_eternity.js";
 
 type Softcap = (value: DecimalSource, start: DecimalSource) => Decimal;
 

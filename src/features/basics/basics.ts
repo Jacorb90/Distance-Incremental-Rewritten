@@ -1,11 +1,15 @@
 import { player } from "@/main";
-import { addFeature, Feature, signal } from "@/util/feature";
+import { addFeature, signal } from "@/util/feature";
 import { format, formatWhole } from "@/util/format";
-import { computed, ComputedRef } from "@vue/reactivity";
-import Decimal, { DecimalSource } from "break_eternity.js";
+import { computed } from "@vue/reactivity";
+import Decimal from "break_eternity.js";
 import { hasAch } from "../achs/achs";
 import { rocketFuel } from "../rocketFuel/rocketFuel";
 import { rockets } from "../rockets/rockets";
+
+import type { Feature } from "@/util/feature";
+import type { ComputedRef } from "@vue/reactivity";
+import type { DecimalSource } from "break_eternity.js";
 
 export const RANK_DESCS: Record<number, ComputedRef<string>> = {
   2: computed(() => `increase Maximum Velocity by ${formatWhole(1)} m/s.`),
@@ -77,7 +81,7 @@ interface BasicActions {
 
 export const basics: Feature<BasicData, BasicActions> = addFeature(
   "basics",
-  1,
+  2,
   {
     unl: {
       reached: computed(() => true),

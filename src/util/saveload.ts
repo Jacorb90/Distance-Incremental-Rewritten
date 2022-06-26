@@ -1,7 +1,8 @@
-import { DecimalSource } from "break_eternity.js";
 import { toRaw } from "vue";
 import { metaSave, player } from "../main";
 import { Notify } from "quasar";
+
+import type { DecimalSource } from "break_eternity.js";
 
 export interface Version {
   alpha?: string;
@@ -64,7 +65,7 @@ export function startingSave(saveID: number, modes: string[] = []): Save {
   return {
     tab: null,
     version: {
-      alpha: "1.1.2",
+      alpha: "1.1.3",
     },
     achs: [],
     saveID,
