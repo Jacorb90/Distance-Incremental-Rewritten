@@ -14,6 +14,7 @@
         <Stats v-if="player.tab === 'Stats'" />
         <Achs v-if="player.tab === 'Achievements'" />
         <Rockets v-if="player.tab === 'Rockets'" />
+        <Auto v-if="player.tab === 'Automation'" />
       </div>
     </div>
   </div>
@@ -30,6 +31,7 @@ import Stats from "./flourish/other/stats.vue";
 import Achs from "./features/achs/achs.vue";
 import Basics from "./features/basics/basics.vue";
 import Rockets from "./features/rockets/rockets.vue";
+import Auto from "./features/auto/auto.vue";
 
 load();
 </script>

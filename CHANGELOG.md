@@ -1,5 +1,12 @@
 # Changelog
 
+## α1.2
+
+- Implemented Automation
+- Added a new Rocket Fuel effect (6 RF) and a new Rank effect (R13)
+- Tweaked a few colors (namely the achievement bar)
+- Added "watchers" to features (in case we need watch events inside features)
+
 ## α1.1.3
 
 - Added more achievement display stuff

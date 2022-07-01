@@ -7,6 +7,7 @@ import Decimal from "break_eternity.js";
 import { watch } from "vue";
 
 import type { Feature } from "@/util/feature";
+import { auto } from "../auto/auto";
 
 type AchData = Record<
   number,
@@ -23,18 +24,21 @@ export const ACH_NAMES: Record<number, string> = {
   13: "Extreme Workout",
   14: "Off to Space!",
   15: "Rocket Blast",
+  16: "Overly Complex",
 
   21: "Driving for Hours",
   22: "Oil Change",
   23: "Fifth Time's the Charm",
   24: "Repeated Blasts",
   25: "Refuel",
+  26: "Riveting Gameplay",
 
   31: "Just Under a Saturn Revolution",
   32: "Putting in the Fake Fuel",
   33: "The Upper Echelon",
   34: "Super Engineer",
   35: "Coal isn't Enough!",
+  36: "Sisyphean Effort",
 };
 
 const ACH_IDS = Object.keys(ACH_NAMES).map(Number);
@@ -76,6 +80,12 @@ export const achs: Feature<AchData, {}> = addFeature("achs", 1, {
       reward: `Decrease the Tier requirement by ${formatWhole(1)} Rank.`,
     })),
 
+    16: computed(() => ({
+      unl: player.auto[0].active,
+      desc: `Activate the Rank Autobuyer.`,
+      reward: `Double Rocket gain.`,
+    })),
+
     21: computed(() => ({
       unl: Decimal.gte(player.distance, 5e5),
       desc: `Reach ${formatDistance(5e5)}.`,
@@ -106,6 +116,11 @@ export const achs: Feature<AchData, {}> = addFeature("achs", 1, {
       reward: `Decrease the Tier requirement by ${formatWhole(1)} Rank again.`,
     })),
 
+    26: computed(() => ({
+      unl: player.auto[1].active,
+      desc: `Activate the Tier Autobuyer.`,
+    })),
+
     31: computed(() => ({
       unl: Decimal.gte(player.distance, 1e12),
       desc: `Reach ${formatDistance(1e12)}.`,
@@ -132,6 +147,12 @@ export const achs: Feature<AchData, {}> = addFeature("achs", 1, {
       unl: Decimal.gte(player.rocketFuel, 5),
       desc: `Reach ${formatWhole(5)} Rocket Fuel.`,
       reward: `Start at Tier ${formatWhole(1)} on reset.`,
+    })),
+
+    36: computed(() => ({
+      unl: Decimal.gte(auto.data[1].power.value, 0.5),
+      desc: `Get Auto-Tier Efficiency to ${formatWhole(50)}%.`,
+      reward: `Increase the Rocket effect exponent by ${format(0.1)}.`,
     })),
   },
 

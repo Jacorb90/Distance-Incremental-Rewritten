@@ -28,6 +28,13 @@ const TAB_DATA: TabData[] = [
     },
     condition: computed(() => player.featuresUnl.includes("rockets")),
   },
+  {
+    name: "Automation",
+    class: {
+      auto: true,
+    },
+    condition: computed(() => player.featuresUnl.includes("auto")),
+  },
 ];
 
 export function availableTabs(): TabData[] {

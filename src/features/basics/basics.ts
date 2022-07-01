@@ -6,6 +6,7 @@ import Decimal from "break_eternity.js";
 import { hasAch } from "../achs/achs";
 import { rocketFuel } from "../rocketFuel/rocketFuel";
 import { rockets } from "../rockets/rockets";
+import { Automated } from "../auto/auto";
 
 import type { Feature } from "@/util/feature";
 import type { ComputedRef } from "@vue/reactivity";
@@ -38,6 +39,7 @@ export const RANK_DESCS: Record<number, ComputedRef<string>> = {
   8: computed(() => `increase Acceleration by ${formatWhole(10)}% per Rank.`),
   10: computed(() => `increase Acceleration by ${formatWhole(50)}%.`),
   12: computed(() => `double Maximum Velocity.`),
+  13: computed(() => `increase Acceleration by ${formatWhole(40)}%.`),
   15: computed(() => `double Acceleration.`),
 };
 
@@ -70,8 +72,15 @@ interface BasicData {
   preRocketMaxVelocity: DecimalSource;
   accel: Decimal;
   maxVelocity: Decimal;
+  rankReqBase: number;
+  rankReqDiv: Decimal;
+  rankGainMult: number;
   rankReq: Decimal;
+  rankTarget: Decimal;
+  tierReqSub: number;
+  tierReqDiv: number;
   tierReq: Decimal;
+  tierTarget: Decimal;
 }
 
 interface BasicActions {
@@ -103,6 +112,7 @@ export const basics: Feature<BasicData, BasicActions> = addFeature(
         if (hasRank(6)) acc = Decimal.mul(acc, 2);
         if (hasRank(8)) acc = Decimal.mul(acc, basics.data.rank3Reward.value);
         if (hasRank(10)) acc = Decimal.mul(acc, 1.5);
+        if (hasRank(13)) acc = Decimal.mul(acc, 1.4);
         if (hasRank(15)) acc = Decimal.mul(acc, 2);
 
         if (hasTier(2) && hasRank(3)) acc = Decimal.mul(acc, 2);
@@ -151,36 +161,99 @@ export const basics: Feature<BasicData, BasicActions> = addFeature(
           rockets.data.maxVelMult.value
         )
       ),
-      rankReq: computed(() => {
+
+      rankReqBase: computed(() => {
         let base = 2;
 
         if (hasRank(4)) base -= 0.3;
         if (hasRank(6)) base -= 0.25;
+        if (player.auto[Automated.Ranks].mastered) base -= 0.1;
 
-        let div = 1;
+        return base;
+      }),
+      rankReqDiv: computed(() => {
+        let div = Decimal.dOne;
 
-        if (hasTier(7)) div += 0.05;
+        if (hasTier(3)) div = Decimal.mul(div, basics.data.tier3Reward.value);
 
-        let req = Decimal.pow(
-          base,
-          Decimal.sub(player.rank, 1).div(div).pow(2)
+        div = Decimal.mul(div, rocketFuel.data.eff2.value);
+
+        if (hasAch(23)) div = Decimal.mul(div, 1.05);
+
+        return div;
+      }),
+      rankGainMult: computed(() => {
+        let mult = 1;
+
+        if (hasTier(7)) mult += 0.05;
+
+        return mult;
+      }),
+      rankReq: computed(() => {
+        const req = Decimal.pow(
+          basics.data.rankReqBase.value,
+          Decimal.sub(player.rank, 1).div(basics.data.rankGainMult.value).pow(2)
         ).times(10);
 
-        if (hasTier(3)) req = Decimal.div(req, basics.data.tier3Reward.value);
-
-        req = Decimal.div(req, rocketFuel.data.eff2.value);
-
-        if (hasAch(23)) req = Decimal.div(req, 1.05);
-
-        return req;
+        return Decimal.div(req, basics.data.rankReqDiv.value);
       }),
+
+      rankTarget: computed(() => {
+        const amt = Decimal.mul(player.distance, basics.data.rankReqDiv.value);
+
+        if (Decimal.lt(amt, 10)) return Decimal.dZero;
+
+        return amt
+          .div(10)
+          .max(1)
+          .log(basics.data.rankReqBase.value)
+          .sqrt()
+          .times(basics.data.rankGainMult.value)
+          .plus(2)
+          .floor();
+      }),
+
+      tierReqSub: computed(() => {
+        let sub = 0;
+
+        if (hasAch(15)) sub++;
+        if (hasAch(25)) sub++;
+
+        return sub;
+      }),
+      tierReqDiv: computed(() => {
+        let div = 1;
+
+        if (player.auto[Automated.Tiers].mastered) div += 0.2;
+
+        return div;
+      }),
+
       tierReq: computed(() => {
-        let req = Decimal.pow(player.tier, 2).div(5).plus(player.tier).plus(3);
+        const req = Decimal.pow(player.tier, 2)
+          .div(5)
+          .plus(player.tier)
+          .div(basics.data.tierReqDiv.value)
+          .plus(3);
 
-        if (hasAch(15)) req = req.sub(1);
-        if (hasAch(25)) req = req.sub(1);
+        return req.sub(basics.data.tierReqSub.value).floor();
+      }),
+      tierTarget: computed(() => {
+        const amt = Decimal.add(player.rank, basics.data.tierReqSub.value);
 
-        return req.floor();
+        if (Decimal.lt(amt, 3)) return Decimal.dZero;
+
+        return amt
+          .sub(3)
+          .times(basics.data.tierReqDiv.value)
+          .times(4)
+          .plus(5)
+          .sqrt()
+          .times(Math.sqrt(5))
+          .sub(5)
+          .div(2)
+          .plus(1)
+          .floor();
       }),
     },
 

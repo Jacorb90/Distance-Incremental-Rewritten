@@ -1,8 +1,10 @@
 import { toRaw } from "vue";
 import { metaSave, player } from "../main";
 import { Notify } from "quasar";
+import { generateInitialAutoState } from "@/features/auto/auto";
 
 import type { DecimalSource } from "break_eternity.js";
+import { Automated } from "@/features/auto/auto";
 
 export interface Version {
   alpha?: string;
@@ -37,6 +39,15 @@ export type Save = {
   tier: DecimalSource;
   rockets: DecimalSource;
   rocketFuel: DecimalSource;
+  auto: Record<
+    Automated,
+    {
+      unl: boolean;
+      active: boolean;
+      mastered: boolean;
+      level: DecimalSource;
+    }
+  >;
 };
 
 export interface MetaSave {
@@ -65,7 +76,7 @@ export function startingSave(saveID: number, modes: string[] = []): Save {
   return {
     tab: null,
     version: {
-      alpha: "1.1.3",
+      alpha: "1.2",
     },
     achs: [],
     saveID,
@@ -89,13 +100,14 @@ export function startingSave(saveID: number, modes: string[] = []): Save {
     tier: 0,
     rockets: 0,
     rocketFuel: 0,
+    auto: generateInitialAutoState(),
   };
 }
 
 export function versionControl() {
-  // version control shenanigans here
+  const start = startingSave(0);
 
-  player.version = startingSave(0).version;
+  player.version = start.version;
 }
 
 export function loadSave(): MetaSave {
@@ -167,3 +179,32 @@ export function getVersionDisplay(v: Version) {
 
   return display;
 }
+
+/*function vStringLT(vs1: string, vs2: string) {
+  const vs1split = vs1.split(".").map(Number);
+  const vs2split = vs2.split(".").map(Number);
+
+  for (let i = 0; i < vs2split.length; i++) {
+    if ((vs1split[i] ?? 0) < vs2split[i]) return true;
+    else if ((vs1split[i] ?? 0) > vs2split[i]) return false;
+  }
+
+  return false;
+}
+
+function versionLT(v1: Version, v2: Version) {
+  const keys: (keyof Version)[] = ["release", "beta", "alpha"];
+
+  for (let i = 0; i < keys.length; i++) {
+    const v1k = v1[keys[i]];
+    const v2k = v2[keys[i]];
+
+    if (v2k !== undefined) {
+      if (v1k === undefined) return true;
+      else if (vStringLT(v1k, v2k)) return true;
+      else if (vStringLT(v2k, v1k)) return false;
+    }
+  }
+
+  return false;
+}*/

@@ -31,7 +31,11 @@
   ><br /><br />
   <span v-if="Decimal.gte(player.rocketFuel, 4)"
     >Increases Rocket effect exponent by
-    {{ format(Decimal.sub(rocketFuel.data.eff4.value, 1).times(100)) }}%.
+    {{ format(Decimal.sub(rocketFuel.data.eff4.value, 1).times(100)) }}%. </span
+  ><br /><br />
+  <span v-if="Decimal.gte(player.rocketFuel, 6)"
+    >Increases Rocket effect multiplier by
+    {{ format(Decimal.sub(rocketFuel.data.eff5.value, 1).times(100)) }}%.
   </span>
 </template>
 

@@ -81,6 +81,32 @@ import { availableTabs, setTab } from "./tabs";
   box-shadow: none;
 }
 
+.btn.bought {
+  background-color: hsl(60, 30%, 20%) !important;
+  border-radius: 10px;
+  border: hsl(60, 30%, 10%) medium solid !important;
+  display: inline-block !important;
+  cursor: default;
+  color: #ffffff;
+  font-size: 12px;
+  max-width: 200px;
+  padding: 7px 25px;
+  text-decoration: none;
+}
+
+.btn.bought * {
+  cursor: default !important;
+}
+
+.btn.bought:hover {
+  background-color: hsl(60, 30%, 20%) !important;
+}
+
+.btn.bought:active {
+  top: 0px;
+  left: 0px;
+}
+
 .btn.tb {
   background-color: hsl(0, 0%, 20%);
   border: hsl(0, 0%, 30%) solid medium;
@@ -133,5 +159,13 @@ import { availableTabs, setTab } from "./tabs";
 
 .btn.rockets:hover {
   background-color: hsl(0, 0%, 50%);
+}
+
+.btn.auto {
+  background-color: hsl(100, 10%, 20%);
+}
+
+.btn.auto:hover {
+  background-color: hsl(100, 10%, 35%);
 }
 </style>

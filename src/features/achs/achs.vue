@@ -1,6 +1,6 @@
 <template>
   <br /><br /><br />
-  <q-banner class="bg-blue-10 text-white">
+  <q-banner class="bg-dark text-white">
     <h6>
       Achievements: {{ formatWhole(getAchCount()) }} /
       {{ formatWhole(Object.keys(ACH_NAMES).length) }}
@@ -38,7 +38,7 @@ import { formatWhole } from "@/util/format";
 import Tooltip from "@/components/Tooltip.vue";
 
 const ACH_ROWS = 3;
-const ACH_COLS = 5;
+const ACH_COLS = 6;
 </script>
 
 <style scoped>

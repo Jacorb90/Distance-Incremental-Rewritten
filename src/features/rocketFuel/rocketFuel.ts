@@ -12,6 +12,7 @@ interface RocketFuelData {
   eff2: Decimal;
   eff3: Decimal;
   eff4: Decimal;
+  eff5: Decimal;
 }
 
 export const rocketFuel: Feature<RocketFuelData, { fuelUp: () => void }> =
@@ -54,9 +55,18 @@ export const rocketFuel: Feature<RocketFuelData, { fuelUp: () => void }> =
             )
       ),
       eff4: computed(() => Decimal.sub(player.rocketFuel, 2).max(1).root(9)),
+      eff5: computed(() =>
+        Decimal.pow(1.5, Decimal.sub(player.rocketFuel, 5).max(0).cbrt())
+      ),
     },
 
-    receptors: {},
+    receptors: {
+      reset: (id) => {
+        if (id >= 3) {
+          player.rocketFuel = 0;
+        }
+      },
+    },
 
     actions: {
       fuelUp: () => {

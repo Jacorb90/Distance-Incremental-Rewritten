@@ -24,6 +24,10 @@ export type Feature<
   data: ComputedData;
   receptors: Receptors;
   actions: Actions;
+  watchers?: (() => {
+    toWatch: ComputedRef<unknown>;
+    callback: (value: unknown) => void;
+  })[];
 } & FurtherOptions;
 
 const features: Record<string, Feature<unknown, unknown>> = {};
@@ -39,28 +43,37 @@ export function signal(sig: Signal, info: number) {
   }
 }
 
-export function addFeature<T, A, FO>(
+export function addFeature<T, A, FO, CD>(
   name: string,
   index: number,
-  feature: Feature<T, A, FO>
+  feature: Feature<T, A, FO, CD>
 ) {
   features[name] = feature;
   featureOrder[index] = name;
 
-  return features[name] as Feature<T, A, FO>;
+  return features[name] as Feature<T, A, FO, CD>;
 }
 
-export function watchUnlocks() {
+export function setupWatchers() {
   for (const index in featureOrder) {
     const key = featureOrder[index];
+    const feature = features[key];
+
     watch(
-      features[key].unl.reached,
+      feature.unl.reached,
       (reached) => {
         if (!player.featuresUnl.includes(key) && reached)
           player.featuresUnl.push(key);
       },
       { immediate: true }
     );
+
+    if (feature.watchers !== undefined) {
+      for (const wKey in feature.watchers) {
+        const data = feature.watchers[wKey]();
+        watch(data.toWatch, data.callback, { immediate: true });
+      }
+    }
   }
 }
 

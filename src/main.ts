@@ -9,7 +9,7 @@ import {
   startingSave,
   versionControl,
 } from "./util/saveload";
-import { signal, watchUnlocks } from "./util/feature";
+import { signal, setupWatchers } from "./util/feature";
 import "@quasar/extras/material-icons/material-icons.css";
 import "quasar/src/css/index.sass";
 
@@ -43,7 +43,7 @@ export function load() {
 
   if (!player.opts.offlineTime) player.lastTime = Date.now();
 
-  watchUnlocks();
+  setupWatchers();
   signal("load", 0);
 
   gameLoop();

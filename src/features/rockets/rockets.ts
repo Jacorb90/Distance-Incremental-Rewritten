@@ -7,6 +7,7 @@ import { basics } from "../basics/basics";
 import { rocketFuel } from "../rocketFuel/rocketFuel";
 
 import type { Feature } from "@/util/feature";
+import { hasAch } from "../achs/achs";
 
 interface RocketData {
   startingReq: Decimal;
@@ -29,7 +30,13 @@ export const rockets: Feature<RocketData, { rocketUp: () => void }> =
     data: {
       startingReq: computed(() => Decimal.div(1e6, rocketFuel.data.eff2.value)),
 
-      gainMult: computed(() => rocketFuel.data.eff3.value),
+      gainMult: computed(() => {
+        let mult = rocketFuel.data.eff3.value;
+
+        if (hasAch(16)) mult = mult.times(2);
+
+        return mult;
+      }),
 
       resetGain: computed(() =>
         Decimal.div(player.distance, rockets.data.startingReq.value)
@@ -53,6 +60,7 @@ export const rockets: Feature<RocketData, { rocketUp: () => void }> =
           .sqrt()
           .times(1.5)
           .times(rocketFuel.data.eff4.value)
+          .plus(hasAch(36) ? 0.1 : 0)
       ),
       effMult: computed(() =>
         Decimal.mul(player.rockets, rocketFuel.data.eff1.value)
@@ -61,6 +69,7 @@ export const rockets: Feature<RocketData, { rocketUp: () => void }> =
           .times(2.5)
           .sub(2)
           .max(1)
+          .times(rocketFuel.data.eff5.value)
       ),
 
       maxVelMult: computed(() =>
