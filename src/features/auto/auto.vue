@@ -9,7 +9,7 @@
           <button
             class="btn toggle"
             :class="{ neg: !player.auto[index(i)].active }"
-            @click="auto.actions.toggle(i - 1)"
+            @click="auto.actions.toggle(index(i))"
           >
             <q-icon
               :name="player.auto[index(i)].active ? 'check' : 'close'"
@@ -23,7 +23,7 @@
             class="btn"
             :class="{ locked: !auto.data[index(i)].canBuyUpg.value }"
             style="border-radius: 0px; border-left: 0px; border-right: 0px"
-            @click="auto.actions.upgrade(i - 1)"
+            @click="auto.actions.upgrade(index(i))"
           >
             Upgrade Efficiency Level <br /><br />
             Cost: {{ format(auto.data[index(i)].upgReq.value) }}

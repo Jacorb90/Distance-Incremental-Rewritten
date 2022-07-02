@@ -53,7 +53,7 @@ export function generateInitialAutoState() {
       level: 0,
     })
     .reduce((acc, cur, i) => {
-      acc[i as Automated] = cur;
+      acc[i as Automated] = { ...cur };
       return acc;
     }, {} as Record<Automated, { unl: boolean; active: boolean; mastered: boolean; level: number }>);
 }
