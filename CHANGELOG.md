@@ -1,5 +1,10 @@
 # Changelog
 
+## α1.2.1
+
+- Rebalanced Automation efficiency
+- Switch "watch" to "watchEffect"
+
 ## α1.2
 
 - Implemented Automation

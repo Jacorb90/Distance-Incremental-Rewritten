@@ -81,13 +81,7 @@ export const auto: Feature<
       unl: computed(() => player.featuresUnl.includes("auto")),
       desc: computed(() => `Nothing :)`),
       power: computed(() =>
-        Decimal.sub(
-          1,
-          Decimal.div(
-            1,
-            Decimal.add(player.auto[Automated.Ranks].level, 1).log(4).plus(1)
-          )
-        )
+        Decimal.div(player.auto[Automated.Ranks].level, 3).plus(1).log(4).min(1)
       ),
       upgReq: computed(() =>
         Decimal.pow(
@@ -107,13 +101,7 @@ export const auto: Feature<
       unl: computed(() => Decimal.gte(player.rockets, 1e5)),
       desc: computed(() => `${formatWhole(1e5)} Rockets`),
       power: computed(() =>
-        Decimal.sub(
-          1,
-          Decimal.div(
-            1,
-            Decimal.add(player.auto[Automated.Tiers].level, 1).log(9).plus(1)
-          )
-        )
+        Decimal.div(player.auto[Automated.Ranks].level, 4).plus(1).log(4).min(1)
       ),
       upgReq: computed(() =>
         Decimal.pow(
@@ -200,11 +188,9 @@ export const auto: Feature<
 
   watchers: new Array(AUTO_COUNT).fill({}).map((_, i) => {
     const a = i as Automated;
-    return () => ({
-      toWatch: auto.data[a].unl,
-      callback: (unl) => {
-        if (!player.auto[a].unl && unl) player.auto[a].unl = true;
-      },
-    });
+    return () => {
+      if (!player.auto[a].unl && auto.data[a].unl.value)
+        player.auto[a].unl = true;
+    };
   }),
 });

@@ -1,5 +1,5 @@
 import { player } from "@/main";
-import { watch } from "vue";
+import { watchEffect } from "vue";
 
 import type { ComputedRef } from "vue";
 
@@ -24,10 +24,7 @@ export type Feature<
   data: ComputedData;
   receptors: Receptors;
   actions: Actions;
-  watchers?: (() => {
-    toWatch: ComputedRef<unknown>;
-    callback: (value: unknown) => void;
-  })[];
+  watchers?: (() => void)[];
 } & FurtherOptions;
 
 const features: Record<string, Feature<unknown, unknown>> = {};
@@ -59,19 +56,14 @@ export function setupWatchers() {
     const key = featureOrder[index];
     const feature = features[key];
 
-    watch(
-      feature.unl.reached,
-      (reached) => {
-        if (!player.featuresUnl.includes(key) && reached)
-          player.featuresUnl.push(key);
-      },
-      { immediate: true }
-    );
+    watchEffect(() => {
+      if (!player.featuresUnl.includes(key) && feature.unl.reached)
+        player.featuresUnl.push(key);
+    });
 
     if (feature.watchers !== undefined) {
       for (const wKey in feature.watchers) {
-        const data = feature.watchers[wKey]();
-        watch(data.toWatch, data.callback, { immediate: true });
+        watchEffect(feature.watchers[wKey]);
       }
     }
   }

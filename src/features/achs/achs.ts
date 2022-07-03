@@ -4,7 +4,6 @@ import { format, formatDistance, formatWhole } from "@/util/format";
 import { computed } from "@vue/reactivity";
 import { Notify } from "quasar";
 import Decimal from "break_eternity.js";
-import { watch } from "vue";
 
 import type { Feature } from "@/util/feature";
 import { auto } from "../auto/auto";
@@ -156,31 +155,23 @@ export const achs: Feature<AchData, {}> = addFeature("achs", 1, {
     })),
   },
 
-  receptors: {
-    load: () => {
-      ACH_IDS.forEach((i) =>
-        watch(
-          achs.data[i],
-          (data) => {
-            if (data.unl && !player.achs.includes(i)) {
-              player.achs.push(i);
+  receptors: {},
 
-              Notify.create({
-                message: ACH_NAMES[i],
-                caption: "Achievement gotten!",
-                position: "top-right",
-                icon: "emoji_events",
-                color: "warning",
-                timeout: 1500,
-                badgeStyle: "opacity: 0;",
-              });
-            }
-          },
-          { immediate: true }
-        )
-      );
-    },
-  },
+  watchers: ACH_IDS.map((i) => () => {
+    if (achs.data[i].value.unl && !player.achs.includes(i)) {
+      player.achs.push(i);
+
+      Notify.create({
+        message: ACH_NAMES[i],
+        caption: "Achievement gotten!",
+        position: "top-right",
+        icon: "emoji_events",
+        color: "warning",
+        timeout: 1500,
+        badgeStyle: "opacity: 0;",
+      });
+    }
+  }),
 
   actions: {},
 });
