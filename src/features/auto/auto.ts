@@ -101,7 +101,7 @@ export const auto: Feature<
       unl: computed(() => Decimal.gte(player.rockets, 1e5)),
       desc: computed(() => `${formatWhole(1e5)} Rockets`),
       power: computed(() =>
-        Decimal.div(player.auto[Automated.Ranks].level, 4).plus(1).log(4).min(1)
+        Decimal.div(player.auto[Automated.Tiers].level, 4).plus(1).log(4).min(1)
       ),
       upgReq: computed(() =>
         Decimal.pow(
