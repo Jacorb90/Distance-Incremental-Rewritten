@@ -1,6 +1,13 @@
 <template>
   <div class="band lb">
     <br />
+    <div v-if="Decimal.neq(timeReversal.data.timeSpeed.value, 1)">
+      <div id="timeSpeedDiv">
+        <br />Time Speed:
+        {{ format(timeReversal.data.timeSpeed.value) }}x<br /><br />
+      </div>
+      <br />
+    </div>
     You have gone {{ formatDistance(player.distance) }}<br /><br />
     <span
       :style="{
@@ -61,13 +68,14 @@
 </template>
 
 <script setup lang="ts">
-import { formatDistance, formatWhole } from "@/util/format";
+import { format, formatDistance, formatWhole } from "@/util/format";
 import { player } from "@/main";
 import { basics, RANK_DESCS, TIER_DESCS } from "./basics";
 import NewsTicker from "@/flourish/newsticker/newsticker.vue";
 import Decimal from "break_eternity.js";
 import { getVersionDisplay } from "@/util/saveload";
 import { getUnlockDesc } from "@/util/feature";
+import { timeReversal } from "../timeReversal/timeReversal";
 </script>
 
 <style scoped>
@@ -109,5 +117,13 @@ import { getUnlockDesc } from "@/util/feature";
 
 #tier:hover {
   background-color: hsl(65, 20%, 40%);
+}
+
+#timeSpeedDiv {
+  width: 15em;
+  background-color: hsl(300, 10%, 10%);
+  border: 1px solid hsl(330, 40%, 50%);
+  color: hsl(330, 40%, 50%);
+  font-weight: bold;
 }
 </style>

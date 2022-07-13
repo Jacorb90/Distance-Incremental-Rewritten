@@ -1,25 +1,35 @@
 <template>
-  <div class="left">
-    <div class="scrollable">
-      <Basics />
-      <div>
-        <button
-          v-if="player.tab !== null"
-          @click="player.tab = null"
-          class="btn min"
-        >
-          Hide
-        </button>
-        <Options v-if="player.tab === 'Options'" />
-        <Stats v-if="player.tab === 'Stats'" />
-        <Achs v-if="player.tab === 'Achievements'" />
-        <Rockets v-if="player.tab === 'Rockets'" />
-        <Auto v-if="player.tab === 'Automation'" />
+  <div
+    class="wholePage"
+    :style="{
+      backgroundColor: player.timeReversal.active
+        ? 'hsl(300, 10%, 10%)'
+        : 'rgb(28, 28, 28)',
+    }"
+  >
+    <div class="left">
+      <div class="scrollable">
+        <Basics />
+        <div>
+          <button
+            v-if="player.tab !== null"
+            @click="player.tab = null"
+            class="btn min"
+          >
+            Hide
+          </button>
+          <Options v-if="player.tab === 'Options'" />
+          <Stats v-if="player.tab === 'Stats'" />
+          <Achs v-if="player.tab === 'Achievements'" />
+          <Rockets v-if="player.tab === 'Rockets'" />
+          <Auto v-if="player.tab === 'Automation'" />
+          <TimeReversal v-if="player.tab === 'Time Reversal'" />
+        </div>
       </div>
     </div>
-  </div>
-  <div class="right">
-    <Tabs />
+    <div class="right">
+      <Tabs />
+    </div>
   </div>
 </template>
 
@@ -32,6 +42,7 @@ import Achs from "./features/achs/achs.vue";
 import Basics from "./features/basics/basics.vue";
 import Rockets from "./features/rockets/rockets.vue";
 import Auto from "./features/auto/auto.vue";
+import TimeReversal from "./features/timeReversal/timeReversal.vue";
 
 load();
 </script>
@@ -49,20 +60,18 @@ load();
   line-height: 1em;
 }
 
-body {
-  background-color: rgb(28, 28, 28) !important;
-}
-
-#app {
-  display: flex;
-}
-
 .scrollable {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overflow-x: hidden;
   min-height: 150px;
   max-height: 100vh;
+}
+
+.wholePage {
+  width: 100%;
+  height: 100%;
+  display: flex;
 }
 
 .left {

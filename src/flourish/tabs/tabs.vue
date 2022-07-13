@@ -168,4 +168,14 @@ import { availableTabs, setTab } from "./tabs";
 .btn.auto:hover {
   background-color: hsl(100, 10%, 35%);
 }
+
+.btn.tr {
+  background-color: hsl(300, 50%, 20%);
+  border-color: hsl(300, 50%, 40%);
+}
+
+.btn.tr:hover {
+  background-color: hsl(300, 50%, 35%);
+  border-color: hsl(300, 50%, 60%);
+}
 </style>

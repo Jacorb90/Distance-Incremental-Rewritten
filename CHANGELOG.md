@@ -1,5 +1,11 @@
 # Changelog
 
+## α1.3
+
+- Implemented Time Reversal (NOT fully balanced yet)
+- Reworked how Automation Efficiency affects the actual Automation
+- Various minor fixes
+
 ## α1.2.1
 
 - Rebalanced Automation efficiency

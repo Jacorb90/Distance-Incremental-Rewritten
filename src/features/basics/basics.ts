@@ -6,7 +6,8 @@ import Decimal from "break_eternity.js";
 import { hasAch } from "../achs/achs";
 import { rocketFuel } from "../rocketFuel/rocketFuel";
 import { rockets } from "../rockets/rockets";
-import { Automated } from "../auto/auto";
+import { auto, Automated } from "../auto/auto";
+import { timeReversal } from "../timeReversal/timeReversal";
 
 import type { Feature } from "@/util/feature";
 import type { ComputedRef } from "@vue/reactivity";
@@ -40,7 +41,12 @@ export const RANK_DESCS: Record<number, ComputedRef<string>> = {
   10: computed(() => `increase Acceleration by ${formatWhole(50)}%.`),
   12: computed(() => `double Maximum Velocity.`),
   13: computed(() => `increase Acceleration by ${formatWhole(40)}%.`),
-  15: computed(() => `double Acceleration.`),
+  15: computed(() => `double Maximum Velocity.`),
+  18: computed(() => `double Maximum Velocity.`),
+  20: computed(
+    () => `increase Maximum Velocity by ${formatWhole(10)}% per Rank.`
+  ),
+  25: computed(() => `double Acceleration and Maximum Velocity.`),
 };
 
 export const TIER_DESCS: Record<number, ComputedRef<string>> = {
@@ -63,6 +69,9 @@ export const TIER_DESCS: Record<number, ComputedRef<string>> = {
   5: computed(() => `double Acceleration and Maximum Velocity`),
   6: computed(() => `triple Acceleration.`),
   7: computed(() => `decrease Rank requirement scaling by 5%.`),
+  8: computed(() => `decrease Rank requirement scaling by 5%.`),
+  9: computed(() => `decrease the Rank requirement base by 0.05.`),
+  10: computed(() => `triple Maximum Velocity.`),
 };
 
 interface BasicData {
@@ -113,7 +122,7 @@ export const basics: Feature<BasicData, BasicActions> = addFeature(
         if (hasRank(8)) acc = Decimal.mul(acc, basics.data.rank3Reward.value);
         if (hasRank(10)) acc = Decimal.mul(acc, 1.5);
         if (hasRank(13)) acc = Decimal.mul(acc, 1.4);
-        if (hasRank(15)) acc = Decimal.mul(acc, 2);
+        if (hasRank(25)) acc = Decimal.mul(acc, 2);
 
         if (hasTier(2) && hasRank(3)) acc = Decimal.mul(acc, 2);
         if (hasTier(4)) acc = Decimal.mul(acc, basics.data.tier3Reward.value);
@@ -124,6 +133,10 @@ export const basics: Feature<BasicData, BasicActions> = addFeature(
         if (hasAch(14)) acc = Decimal.mul(acc, 1.15);
         if (hasAch(22)) acc = Decimal.mul(acc, 1.06);
         if (hasAch(32)) acc = Decimal.mul(acc, 1.07);
+        if (hasAch(45)) acc = Decimal.mul(acc, 1.11);
+
+        if (player.timeReversal.upgrades.includes(13))
+          acc = Decimal.mul(acc, timeReversal.data[13].value.effect ?? 1);
 
         return acc;
       }),
@@ -137,15 +150,24 @@ export const basics: Feature<BasicData, BasicActions> = addFeature(
         if (hasRank(6)) vel = Decimal.mul(vel, 2);
         if (hasRank(7)) vel = Decimal.mul(vel, basics.data.rank3Reward.value);
         if (hasRank(12)) vel = Decimal.mul(vel, 2);
+        if (hasRank(15)) vel = Decimal.mul(vel, 2);
+        if (hasRank(18)) vel = Decimal.mul(vel, 2);
+        if (hasRank(20)) vel = Decimal.mul(vel, basics.data.rank3Reward.value);
+        if (hasRank(25)) vel = Decimal.mul(vel, 2);
 
         if (hasTier(1)) vel = Decimal.mul(vel, 1.2);
         if (hasTier(2) && hasRank(3)) vel = Decimal.mul(vel, 5);
         if (hasTier(3)) vel = Decimal.mul(vel, 2);
         if (hasTier(4)) vel = Decimal.mul(vel, basics.data.tier3Reward.value);
         if (hasTier(5)) vel = Decimal.mul(vel, 2);
+        if (hasTier(10)) vel = Decimal.mul(vel, 3);
 
         if (hasAch(14)) vel = Decimal.mul(vel, 1.15);
         if (hasAch(21)) vel = Decimal.mul(vel, 1.05);
+        if (hasAch(41)) vel = Decimal.mul(vel, 1.27);
+
+        if (player.timeReversal.upgrades.includes(13))
+          vel = Decimal.mul(vel, timeReversal.data[13].value.effect ?? 1);
 
         return vel;
       }),
@@ -167,6 +189,7 @@ export const basics: Feature<BasicData, BasicActions> = addFeature(
 
         if (hasRank(4)) base -= 0.3;
         if (hasRank(6)) base -= 0.25;
+        if (hasTier(9)) base -= 0.05;
         if (player.auto[Automated.Ranks].mastered) base -= 0.1;
 
         return base;
@@ -178,7 +201,8 @@ export const basics: Feature<BasicData, BasicActions> = addFeature(
 
         div = Decimal.mul(div, rocketFuel.data.eff2.value);
 
-        if (hasAch(23)) div = Decimal.mul(div, 1.05);
+        if (hasAch(23)) div = Decimal.div(div, 0.95);
+        if (hasAch(43)) div = Decimal.div(div, 0.88);
 
         return div;
       }),
@@ -186,6 +210,9 @@ export const basics: Feature<BasicData, BasicActions> = addFeature(
         let mult = 1;
 
         if (hasTier(7)) mult += 0.05;
+        if (hasTier(8)) mult += 0.05;
+
+        if (player.timeReversal.upgrades.includes(14)) mult += 0.1;
 
         return mult;
       }),
@@ -199,7 +226,10 @@ export const basics: Feature<BasicData, BasicActions> = addFeature(
       }),
 
       rankTarget: computed(() => {
-        const amt = Decimal.mul(player.distance, basics.data.rankReqDiv.value);
+        const amt = Decimal.mul(
+          player.distance,
+          basics.data.rankReqDiv.value
+        ).times(auto.data[Automated.Ranks].power.value);
 
         if (Decimal.lt(amt, 10)) return Decimal.dZero;
 
@@ -239,7 +269,10 @@ export const basics: Feature<BasicData, BasicActions> = addFeature(
         return req.sub(basics.data.tierReqSub.value).floor();
       }),
       tierTarget: computed(() => {
-        const amt = Decimal.add(player.rank, basics.data.tierReqSub.value);
+        const amt = Decimal.mul(
+          player.rank,
+          auto.data[Automated.Tiers].power.value
+        ).plus(basics.data.tierReqSub.value);
 
         if (Decimal.lt(amt, 3)) return Decimal.dZero;
 
@@ -259,10 +292,11 @@ export const basics: Feature<BasicData, BasicActions> = addFeature(
 
     receptors: {
       tick: (diff) => {
-        player.distance = Decimal.mul(player.velocity, diff).plus(
-          player.distance
-        );
+        player.distance = Decimal.mul(player.velocity, diff)
+          .times(timeReversal.data.timeSpeed.value)
+          .plus(player.distance);
         player.velocity = Decimal.mul(basics.data.accel.value, diff)
+          .times(timeReversal.data.timeSpeed.value)
           .plus(player.velocity)
           .min(basics.data.maxVelocity.value);
       },

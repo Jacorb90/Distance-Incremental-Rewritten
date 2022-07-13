@@ -31,12 +31,16 @@ const features: Record<string, Feature<unknown, unknown>> = {};
 const featureOrder: Record<number, string> = {};
 
 export function signal(sig: Signal, info: number) {
-  if (sig === "load") {
-    for (const index in featureOrder)
-      features[featureOrder[index]].receptors[sig]?.();
-  } else {
-    for (const index in featureOrder)
-      features[featureOrder[index]].receptors[sig]?.(info);
+  switch (sig) {
+    case "load":
+      for (const index in featureOrder)
+        features[featureOrder[index]].receptors[sig]?.();
+      break;
+
+    default:
+      for (const index in featureOrder)
+        features[featureOrder[index]].receptors[sig]?.(info);
+      break;
   }
 }
 
@@ -57,7 +61,7 @@ export function setupWatchers() {
     const feature = features[key];
 
     watchEffect(() => {
-      if (!player.featuresUnl.includes(key) && feature.unl.reached)
+      if (!player.featuresUnl.includes(key) && feature.unl.reached.value)
         player.featuresUnl.push(key);
     });
 

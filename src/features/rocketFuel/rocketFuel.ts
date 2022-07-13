@@ -5,9 +5,11 @@ import { computed } from "@vue/reactivity";
 import Decimal from "break_eternity.js";
 
 import type { Feature } from "@/util/feature";
+import { timeReversal } from "../timeReversal/timeReversal";
 
 interface RocketFuelData {
   cost: Decimal;
+  extra: Decimal;
   eff1: Decimal;
   eff2: Decimal;
   eff3: Decimal;
@@ -28,35 +30,60 @@ export const rocketFuel: Feature<RocketFuelData, { fuelUp: () => void }> =
       cost: computed(() =>
         Decimal.pow(1.6, Decimal.pow(player.rocketFuel, 1.5)).times(25).floor()
       ),
+      extra: computed(() => {
+        let extra = Decimal.dZero;
+
+        if (player.timeReversal.upgrades.includes(15))
+          extra = extra.plus(timeReversal.data[15].value.effect ?? 0);
+
+        return extra;
+      }),
       eff1: computed(() =>
-        Decimal.lt(player.rocketFuel, 1)
+        Decimal.lt(rocketFuel.data.extra.value.plus(player.rocketFuel), 1)
           ? Decimal.dOne
           : Decimal.pow(
               10,
-              Decimal.sqrt(player.rocketFuel).times(0.75).plus(0.25)
+              Decimal.sqrt(rocketFuel.data.extra.value.plus(player.rocketFuel))
+                .times(0.75)
+                .plus(0.25)
             )
               .div(20)
               .plus(1)
       ),
       eff2: computed(() =>
-        Decimal.lt(player.rocketFuel, 2)
+        Decimal.lt(rocketFuel.data.extra.value.plus(player.rocketFuel), 2)
           ? Decimal.dOne
           : Decimal.pow(
               Math.sqrt(2),
-              Decimal.sub(player.rocketFuel, 1).pow(0.75)
+              Decimal.sub(
+                rocketFuel.data.extra.value.plus(player.rocketFuel),
+                1
+              ).pow(0.75)
             )
       ),
       eff3: computed(() =>
-        Decimal.lt(player.rocketFuel, 3)
+        Decimal.lt(rocketFuel.data.extra.value.plus(player.rocketFuel), 3)
           ? Decimal.dOne
           : Decimal.pow(
               Math.pow(2, 0.25),
-              Decimal.sub(player.rocketFuel, 2).pow(0.7)
+              Decimal.sub(
+                rocketFuel.data.extra.value.plus(player.rocketFuel),
+                2
+              ).pow(0.7)
             )
       ),
-      eff4: computed(() => Decimal.sub(player.rocketFuel, 2).max(1).root(9)),
+      eff4: computed(() =>
+        Decimal.sub(rocketFuel.data.extra.value.plus(player.rocketFuel), 2)
+          .max(1)
+          .root(9)
+      ),
       eff5: computed(() =>
-        Decimal.pow(1.5, Decimal.sub(player.rocketFuel, 5).max(0).cbrt())
+        Decimal.pow(
+          1.5,
+          Decimal.sub(rocketFuel.data.extra.value.plus(player.rocketFuel), 5)
+            .max(0)
+            .cbrt()
+        )
       ),
     },
 

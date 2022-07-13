@@ -1,6 +1,12 @@
 <template>
   <br /><br /><br />
-  <b>{{ formatWhole(player.rocketFuel) }} Rocket Fuel</b><br /><br />
+  <b
+    >{{ formatWhole(player.rocketFuel)
+    }}<span v-if="Decimal.gt(rocketFuel.data.extra.value, 0)">
+      + {{ format(rocketFuel.data.extra.value) }}</span
+    >
+    Rocket Fuel</b
+  ><br /><br />
   <button
     id="rocket-fuel"
     class="btn"
