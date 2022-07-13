@@ -239,7 +239,8 @@ export const auto: Feature<
           mastered: false,
           level: 0,
         };
-      } else if (!player.auto[a].unl && auto.data[a].unl.value)
+      }
+      if (!player.auto[a].unl && auto.data[a].unl.value)
         player.auto[a].unl = true;
     };
   }),
