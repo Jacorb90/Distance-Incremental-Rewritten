@@ -81,7 +81,7 @@ export function startingSave(saveID: number, modes: string[] = []): Save {
   return {
     tab: null,
     version: {
-      alpha: "1.3",
+      alpha: "1.3.1",
     },
     achs: [],
     saveID,

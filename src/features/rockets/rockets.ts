@@ -8,6 +8,7 @@ import { rocketFuel } from "../rocketFuel/rocketFuel";
 
 import type { Feature } from "@/util/feature";
 import { hasAch } from "../achs/achs";
+import { timeReversal } from "../timeReversal/timeReversal";
 
 interface RocketData {
   startingReq: Decimal;
@@ -32,6 +33,9 @@ export const rockets: Feature<RocketData, { rocketUp: () => void }> =
 
       gainMult: computed(() => {
         let mult = rocketFuel.data.eff3.value;
+
+        if (player.timeReversal.upgrades.includes(23))
+          mult = mult.times(timeReversal.data[23].value.effect ?? 1);
 
         if (hasAch(16)) mult = mult.times(2);
 

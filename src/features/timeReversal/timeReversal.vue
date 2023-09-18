@@ -14,9 +14,15 @@
   {{ formatWhole(Decimal.floor(player.timeReversal.cubes)) }} Time Cubes (+{{
     format(timeReversal.data.timeCubeGain.value)
   }}/s)<br /><br /><br />
-  <div class="row justify-center q-gutter-xs">
+  <div
+    v-for="r in TR_UPGRADE_ROWS"
+    :key="r"
+    class="row justify-center q-gutter-xs"
+  >
     <button
-      v-for="id in Object.keys(TR_UPGRADE_COSTS).map(Number)"
+      v-for="id in Object.keys(TR_UPGRADE_COSTS)
+        .filter((id) => id.startsWith(r.toString()))
+        .map(Number)"
       :key="id"
       style="height: 12em"
       @click="timeReversal.actions.buyUpg(id)"
@@ -54,7 +60,11 @@
 import { player } from "@/main";
 import { format, formatWhole } from "@/util/format";
 import Decimal from "break_eternity.js";
-import { timeReversal, TR_UPGRADE_COSTS } from "./timeReversal";
+import {
+  timeReversal,
+  TR_UPGRADE_COSTS,
+  TR_UPGRADE_ROWS,
+} from "./timeReversal";
 import Tooltip from "@/components/Tooltip.vue";
 </script>
 

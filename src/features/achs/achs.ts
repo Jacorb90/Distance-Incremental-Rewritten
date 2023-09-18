@@ -87,7 +87,7 @@ export const achs: Feature<AchData, {}> = addFeature("achs", 1, {
 
     15: computed(() => ({
       unl: Decimal.gte(player.rocketFuel, 1),
-      desc: `Get ${formatWhole(1)} Rocket Fuel.`,
+      desc: `Purchase ${formatWhole(1)} Rocket Fuel.`,
       reward: `Decrease the Tier requirement by ${formatWhole(1)} Rank.`,
     })),
 
@@ -129,7 +129,7 @@ export const achs: Feature<AchData, {}> = addFeature("achs", 1, {
 
     25: computed(() => ({
       unl: Decimal.gte(player.rocketFuel, 3),
-      desc: `Reach ${formatWhole(3)} Rocket Fuel.`,
+      desc: `Purchase ${formatWhole(3)} Rocket Fuel.`,
       reward: `Decrease the Tier requirement by ${formatWhole(1)} Rank again.`,
     })),
 
@@ -168,7 +168,7 @@ export const achs: Feature<AchData, {}> = addFeature("achs", 1, {
 
     35: computed(() => ({
       unl: Decimal.gte(player.rocketFuel, 5),
-      desc: `Reach ${formatWhole(5)} Rocket Fuel.`,
+      desc: `Purchase ${formatWhole(5)} Rocket Fuel.`,
       reward: `Start at Tier ${formatWhole(1)} on reset.`,
     })),
 
@@ -207,18 +207,18 @@ export const achs: Feature<AchData, {}> = addFeature("achs", 1, {
 
     45: computed(() => ({
       unl: Decimal.gte(player.rocketFuel, 12),
-      desc: `Reach ${formatWhole(12)} Rocket Fuel.`,
+      desc: `Purchase ${formatWhole(12)} Rocket Fuel.`,
       reward: `Increase Acceleration by ${formatWhole(11)}%.`,
     })),
 
     46: computed(() => ({
-      unl: Decimal.gte(auto.data[2].power.value, 0.1),
-      desc: `Get Auto-Rocket efficiency to ${formatWhole(10)}%.`,
+      unl: Decimal.gte(auto.data[2].power.value, 0.03),
+      desc: `Get Auto-Rocket efficiency to ${formatWhole(3)}%.`,
     })),
 
     47: computed(() => ({
-      unl: Decimal.gte(timeReversal.data.timeSpeed.value, 1e3),
-      desc: `Reach ${formatWhole(1e3)}x Time Speed.`,
+      unl: Decimal.gte(timeReversal.data.timeSpeed.value, 10),
+      desc: `Reach ${formatWhole(10)}x Time Speed.`,
       reward: `Increase Time Speed by ${formatWhole(11)}%.`,
     })),
   },

@@ -102,7 +102,7 @@ const NEWSTICKER_DATA: NewsData[] = [
     text: "The most recent feature of Distance Incremental Rewritten is definitely not a ripoff of the original game.",
   },
   {
-    text: "I should make a mod of Antimatter Dimension that releases Reality before Hevipelle does...",
+    text: '"I should make a mod of Antimatter Dimension that releases Reality before Hevipelle does..."            This news ticker aged like fine milk.',
   },
   { text: "Kirb is still faster than you" },
   {
@@ -137,6 +137,15 @@ const NEWSTICKER_DATA: NewsData[] = [
   },
   {
     text: "We are out of news, so we'll just start repeating old news and hope nobody notices... oop-",
+  },
+  {
+    text: "I wonder when the Low God update will be released.",
+  },
+  {
+    text: "In case you were wondering: No, Distance Incremental is not made in Rust.",
+  },
+  {
+    text: "Only someone who hasn't ascended to a higher plane would think the original Distance Incremental isn't worth playing now that a rewrite exists.",
   },
 
   // Distance-based Conditions
@@ -199,6 +208,10 @@ const NEWSTICKER_DATA: NewsData[] = [
   {
     text: "Out to the world beyond the rocket",
     condition: () => player.achs.length >= 5,
+  },
+  {
+    text: "Aw, you're doing so well! Feel free to take a break whenever you need one!",
+    condition: () => player.achs.length >= 20,
   },
 
   // Special Conditions

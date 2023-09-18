@@ -201,6 +201,9 @@ export const basics: Feature<BasicData, BasicActions> = addFeature(
 
         div = Decimal.mul(div, rocketFuel.data.eff2.value);
 
+        if (player.timeReversal.upgrades.includes(22))
+          div = Decimal.mul(div, timeReversal.data[22].value.effect ?? 1);
+
         if (hasAch(23)) div = Decimal.div(div, 0.95);
         if (hasAch(43)) div = Decimal.div(div, 0.88);
 

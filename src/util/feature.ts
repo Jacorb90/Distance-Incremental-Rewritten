@@ -27,7 +27,10 @@ export type Feature<
   watchers?: (() => void)[];
 } & FurtherOptions;
 
-const features: Record<string, Feature<unknown, unknown>> = {};
+const features: Record<
+  string,
+  Feature<unknown, unknown, unknown, unknown>
+> = {};
 const featureOrder: Record<number, string> = {};
 
 export function signal(sig: Signal, info: number) {

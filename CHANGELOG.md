@@ -1,5 +1,10 @@
 # Changelog
 
+## a1.3.1
+
+- Balanced Time Reversal (two achievements still aren't doable, this is intentional)
+- Various minor clarifications/wording improvements
+
 ## α1.3
 
 - Implemented Time Reversal (NOT fully balanced yet)

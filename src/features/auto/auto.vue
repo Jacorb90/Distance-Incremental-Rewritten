@@ -25,7 +25,9 @@
             style="border-radius: 0px; border-left: 0px; border-right: 0px"
             @click="auto.actions.upgrade(index(i))"
           >
-            Upgrade Efficiency Level <br /><br />
+            Upgrade Efficiency Level [{{
+              formatWhole(player.auto[index(i)].level)
+            }}]<br /><br />
             Cost: {{ format(auto.data[index(i)].upgReq.value) }}
             {{ auto.constants[index(i)].upgResName }}</button
           ><br />
@@ -64,7 +66,7 @@
 <script setup lang="ts">
 import { Automated, AUTO_COUNT, auto } from "./auto";
 import { player } from "@/main";
-import { format, formatDistance } from "@/util/format";
+import { format, formatDistance, formatWhole } from "@/util/format";
 import Decimal from "break_eternity.js";
 
 const index = (i: number): Automated => i - 1;

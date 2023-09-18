@@ -11,16 +11,20 @@
           @click="rockets.actions.rocketUp()"
         >
           Reset all previous progress to gain
-          {{ formatWhole(rockets.data.resetGain.value) }} Rockets.<br /><br />
-          <b
-            >Next At: {{ formatDistance(rockets.data.nextAt.value) }}</b
+          {{ formatWhole(rockets.data.resetGain.value) }} Rockets.<br />
+          <b v-if="Decimal.lt(rockets.data.resetGain.value, 1e3)"
+            ><br />Next At: {{ formatDistance(rockets.data.nextAt.value) }}</b
           ></button
-        ><br /><br /><br />
+        ><br /><br /><br /><br />
 
-        Rocket Effect: (log(x+1)+1)<sup>{{
-          format(rockets.data.effExp.value)
-        }}</sup>
-        &times; {{ format(rockets.data.effMult.value) }} <br /><br />
+        <div>
+          <Tooltip><i>Boosts based on pre-Rocket values (x)</i></Tooltip>
+          Rocket Effect: (log(x+1)+1)<sup>{{
+            format(rockets.data.effExp.value)
+          }}</sup>
+          &times; {{ format(rockets.data.effMult.value) }}
+        </div>
+        <br /><br />
 
         Maximum Velocity: {{ format(rockets.data.maxVelMult.value) }}x<br />
         Acceleration: {{ format(rockets.data.accMult.value) }}x<br /><br />
@@ -39,6 +43,7 @@ import Decimal from "break_eternity.js";
 import { player } from "@/main";
 import { rockets } from "./rockets";
 import RocketFuel from "../rocketFuel/rocketFuel.vue";
+import Tooltip from "@/components/Tooltip.vue";
 </script>
 
 <style scoped>
