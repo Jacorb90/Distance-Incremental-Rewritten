@@ -8,8 +8,15 @@ import { Automated } from "../auto/auto";
 
 import type { DecimalSource } from "break_eternity.js";
 import type { Feature } from "@/util/feature";
+import { collapse, hasLEMil } from "../collapse/collapse";
+import { hasRank, hasTier } from "../basics/basics";
 
 export const TR_UPGRADE_ROWS: number[] = [1, 2];
+export const TR_UPGRADE_COLS = computed(() =>
+  Object.keys(TR_UPGRADE_COSTS)
+    .filter((name) => name.startsWith("1"))
+    .map((s) => s.substring(1))
+);
 
 export const TR_UPGRADE_COSTS: Record<number, DecimalSource> = {
   11: 50,
@@ -61,6 +68,15 @@ export const timeReversal: Feature<
 
       if (hasAch(27)) speed = speed.times(1.1);
       if (hasAch(47)) speed = speed.times(1.11);
+      if (hasAch(58)) speed = speed.times(1.07);
+
+      if (hasRank(50)) speed = speed.times(1.1);
+      if (hasTier(13)) speed = speed.times(1.2);
+
+      speed = Decimal.mul(speed, collapse.data.eff.value);
+
+      if (hasLEMil(12))
+        speed = Decimal.mul(speed, collapse.data[12].value.effect ?? 1);
 
       return speed;
     }),
@@ -77,6 +93,9 @@ export const timeReversal: Feature<
       if (player.timeReversal.upgrades.includes(21))
         gain = Decimal.mul(gain, timeReversal.data[21].value.effect ?? 1);
 
+      if (hasLEMil(12))
+        gain = Decimal.mul(gain, collapse.data[12].value.effect ?? 1);
+
       return gain;
     }),
     11: computed(() => ({
@@ -85,9 +104,12 @@ export const timeReversal: Feature<
     })),
     12: computed(() => ({
       description: `Increase Time Cube gain by ${formatWhole(
-        2
+        player.auto[Automated.TimeReversalUpgrades].mastered ? 4 : 2
       )}% per Rank or Tier.`,
-      effect: Decimal.pow(1.02, Decimal.add(player.rank, player.tier)),
+      effect: Decimal.pow(
+        player.auto[Automated.TimeReversalUpgrades].mastered ? 1.04 : 1.02,
+        Decimal.add(player.rank, player.tier)
+      ),
     })),
     13: computed(() => ({
       description: `Increase Maximum Velocity & Acceleration by ${formatWhole(

@@ -1,22 +1,32 @@
 import { player } from "@/main";
-import Decimal from "break_eternity.js";
+import Decimal, { DecimalSource } from "break_eternity.js";
 import { addFeature } from "@/util/feature";
 import { hasAch } from "../achs/achs";
 import { computed } from "vue";
-import { format, formatWhole } from "@/util/format";
+import { DISTANCES, format, formatWhole } from "@/util/format";
 import { basics } from "../basics/basics";
 
 import type { Feature } from "@/util/feature";
 import type { ComputedRef } from "vue";
 import { rockets } from "../rockets/rockets";
+import { rocketFuel } from "../rocketFuel/rocketFuel";
+import { collapse, hasLEMil } from "../collapse/collapse";
+import {
+  TR_UPGRADE_COLS,
+  TR_UPGRADE_COSTS,
+  TR_UPGRADE_ROWS,
+  timeReversal,
+} from "../timeReversal/timeReversal";
 
 export enum Automated {
   Ranks,
   Tiers,
   Rockets,
+  RocketFuel,
+  TimeReversalUpgrades,
 }
 
-export const AUTO_COUNT = 3;
+export const AUTO_COUNT = 5;
 
 type AutoData = Record<
   Automated,
@@ -41,8 +51,9 @@ type AutoExtensions = {
   constants: Record<
     Automated,
     {
+      name: string;
       upgResName: string;
-      masteryReq: number | string;
+      masteryReq: DecimalSource;
     }
   >;
 };
@@ -143,20 +154,83 @@ export const auto: Feature<
       ),
       masteryDesc: computed(() => `Multiply Rocket gain by ${format(2.5)}.`),
     },
+    [Automated.RocketFuel]: {
+      visible: computed(() => hasLEMil(21)),
+      unl: computed(() => Decimal.gte(player.collapse.cadavers, 100)),
+      desc: computed(() => `${formatWhole(100)} Cadavers`),
+      power: computed(() =>
+        Decimal.div(player.auto[Automated.RocketFuel].level, 20)
+          .plus(1)
+          .log(7)
+          .min(1)
+      ),
+      upgReq: computed(() =>
+        Decimal.pow(
+          1.65,
+          Decimal.pow(player.auto[Automated.RocketFuel].level, 2)
+        ).times(40)
+      ),
+      canBuyUpg: computed(() =>
+        Decimal.gte(
+          player.collapse.cadavers,
+          auto.data[Automated.RocketFuel].upgReq.value
+        )
+      ),
+      masteryDesc: computed(() => `Add ${formatWhole(1)} extra Rocket Fuel.`),
+    },
+    [Automated.TimeReversalUpgrades]: {
+      visible: computed(() => hasLEMil(23)),
+      unl: computed(() => Decimal.gte(collapse.data.essence.value, 5e3)),
+      desc: computed(() => `${formatWhole(1e5)} Life Essence`),
+      power: computed(() =>
+        Decimal.div(player.auto[Automated.TimeReversalUpgrades].level, 25)
+          .plus(1)
+          .log(7)
+          .min(1)
+      ),
+      upgReq: computed(() =>
+        Decimal.pow(
+          1.85,
+          Decimal.pow(player.auto[Automated.TimeReversalUpgrades].level, 2)
+        ).times(3e3)
+      ),
+      canBuyUpg: computed(() =>
+        Decimal.gte(
+          collapse.data.essence.value,
+          auto.data[Automated.TimeReversalUpgrades].upgReq.value
+        )
+      ),
+      masteryDesc: computed(
+        () => `Increase 2nd Time Reversal Upgrade's base by ${formatWhole(2)}.`
+      ),
+    },
   },
 
   constants: {
     [Automated.Ranks]: {
+      name: "Ranks",
       upgResName: "Rockets",
       masteryReq: 1e14,
     },
     [Automated.Tiers]: {
+      name: "Tiers",
       upgResName: "Rockets",
       masteryReq: 2.5e15,
     },
     [Automated.Rockets]: {
+      name: "Rockets",
       upgResName: "Time Cubes",
-      masteryReq: "1e40",
+      masteryReq: "1e32",
+    },
+    [Automated.RocketFuel]: {
+      name: "Rocket Fuel",
+      upgResName: "Cadavers",
+      masteryReq: Decimal.mul(1e21, DISTANCES.uni),
+    },
+    [Automated.TimeReversalUpgrades]: {
+      name: "Time Reversal Upgrades",
+      upgResName: "Life Essence",
+      masteryReq: Decimal.mul(1e50, DISTANCES.uni),
     },
   },
 
@@ -173,11 +247,41 @@ export const auto: Feature<
           .times(auto.data[Automated.Rockets].power.value)
           .plus(player.rockets);
       }
+      if (player.auto[Automated.RocketFuel].active) {
+        player.rocketFuel = Decimal.max(
+          player.rocketFuel,
+          rocketFuel.data.target.value
+        );
+      }
+      if (player.auto[Automated.TimeReversalUpgrades].active) {
+        const amt = Decimal.mul(
+          player.timeReversal.cubes,
+          auto.data[Automated.TimeReversalUpgrades].power.value
+        );
+        TR_UPGRADE_ROWS.forEach((row) => {
+          TR_UPGRADE_COLS.value.forEach((col) => {
+            const id = Number(row + col);
+            if (
+              !player.timeReversal.upgrades.includes(id) &&
+              amt.gte(TR_UPGRADE_COSTS[id])
+            ) {
+              player.timeReversal.upgrades.push(id);
+            }
+          });
+        });
+      }
     },
 
     reset: (id) => {
       if (id >= 3) {
-        player.auto = generateInitialAutoState();
+        const initialAutoState = generateInitialAutoState();
+
+        if (!hasLEMil(13))
+          player.auto[Automated.Ranks] = initialAutoState[Automated.Ranks];
+        if (!hasLEMil(14))
+          player.auto[Automated.Tiers] = initialAutoState[Automated.Tiers];
+        if (!hasLEMil(31))
+          player.auto[Automated.Rockets] = initialAutoState[Automated.Rockets];
       }
     },
   },
@@ -185,6 +289,33 @@ export const auto: Feature<
   actions: {
     upgrade: (type) => {
       switch (auto.constants[type].upgResName) {
+        case "Life Essence":
+          if (
+            Decimal.lt(
+              collapse.data.essence.value,
+              auto.data[type].upgReq.value
+            )
+          )
+            return;
+
+          player.collapse.spent = Decimal.add(
+            player.collapse.spent,
+            auto.data[type].upgReq.value
+          );
+          break;
+
+        case "Cadavers":
+          if (
+            Decimal.lt(player.collapse.cadavers, auto.data[type].upgReq.value)
+          )
+            return;
+
+          player.collapse.cadavers = Decimal.sub(
+            player.collapse.cadavers,
+            auto.data[type].upgReq.value
+          );
+          break;
+
         case "Time Cubes":
           if (
             Decimal.lt(player.timeReversal.cubes, auto.data[type].upgReq.value)

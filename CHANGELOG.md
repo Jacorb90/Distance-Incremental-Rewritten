@@ -1,5 +1,11 @@
 # Changelog
 
+## a1.4
+
+- Implemented Collapse
+- Added a few new Rank/Tier rewards
+- Various minor fixes/modifications
+
 ## a1.3.1
 
 - Balanced Time Reversal (two achievements still aren't doable, this is intentional)

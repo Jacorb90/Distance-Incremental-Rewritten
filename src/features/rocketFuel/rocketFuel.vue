@@ -6,7 +6,10 @@
       + {{ format(rocketFuel.data.extra.value) }}</span
     >
     Rocket Fuel</b
-  ><br /><br />
+  ><br /><span v-if="Decimal.neq(rocketFuel.data.power.value, 1)"
+    ><br /><i>Fuel Power: {{ format(rocketFuel.data.power.value) }}&times;</i
+    ><br /></span
+  ><br />
   <button
     id="rocket-fuel"
     class="btn"
@@ -24,12 +27,18 @@
     {{ format(Decimal.sub(rocketFuel.data.eff1.value, 1).times(100)) }}%.</span
   ><br /><br />
   <span v-if="Decimal.gte(player.rocketFuel, 2)"
-    >Decreases the Rank & Rocket requirements by
-    {{
-      format(
-        Decimal.sub(1, Decimal.div(1, rocketFuel.data.eff2.value)).times(100)
-      )
-    }}%.</span
+    ><span v-if="Decimal.lt(rocketFuel.data.eff2.value, 100)">
+      Decreases the Rank & Rocket requirements by
+      {{
+        format(
+          Decimal.sub(1, Decimal.div(1, rocketFuel.data.eff2.value)).times(100)
+        )
+      }}%.
+    </span>
+    <span v-else>
+      Divides the Rank & Rocket requirements by
+      {{ format(rocketFuel.data.eff2.value) }}.
+    </span></span
   ><br /><br />
   <span v-if="Decimal.gte(player.rocketFuel, 3)"
     >Increases Rocket gain by

@@ -5,6 +5,10 @@ import { generateInitialAutoState } from "@/features/auto/auto";
 
 import type { DecimalSource } from "break_eternity.js";
 import { Automated } from "@/features/auto/auto";
+import {
+  CollapseSaveData,
+  startingCollapseSaveData,
+} from "@/features/collapse/collapse";
 
 export interface Version {
   alpha?: string;
@@ -53,6 +57,7 @@ export type Save = {
     cubes: DecimalSource;
     upgrades: number[];
   };
+  collapse: CollapseSaveData;
 };
 
 export interface MetaSave {
@@ -81,7 +86,7 @@ export function startingSave(saveID: number, modes: string[] = []): Save {
   return {
     tab: null,
     version: {
-      alpha: "1.3.1",
+      alpha: "1.4",
     },
     achs: [],
     saveID,
@@ -111,6 +116,7 @@ export function startingSave(saveID: number, modes: string[] = []): Save {
       cubes: 0,
       upgrades: [],
     },
+    collapse: startingCollapseSaveData(),
   };
 }
 

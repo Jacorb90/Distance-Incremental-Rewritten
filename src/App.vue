@@ -24,6 +24,7 @@
           <Rockets v-if="player.tab === 'Rockets'" />
           <Auto v-if="player.tab === 'Automation'" />
           <TimeReversal v-if="player.tab === 'Time Reversal'" />
+          <Collapse v-if="player.tab === 'Collapse'" />
         </div>
       </div>
     </div>
@@ -43,6 +44,7 @@ import Basics from "./features/basics/basics.vue";
 import Rockets from "./features/rockets/rockets.vue";
 import Auto from "./features/auto/auto.vue";
 import TimeReversal from "./features/timeReversal/timeReversal.vue";
+import Collapse from "./features/collapse/Collapse.vue";
 
 load();
 </script>

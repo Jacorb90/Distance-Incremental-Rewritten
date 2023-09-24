@@ -4,7 +4,7 @@
     <div v-for="i in AUTO_COUNT" :key="i">
       <div v-if="auto.data[index(i)].visible.value" class="autoBox">
         <div v-if="player.auto[index(i)].unl">
-          <h6>{{ Automated[index(i)] }}</h6>
+          <h6>{{ auto.constants[index(i)].name }}</h6>
           <br />
           <button
             class="btn toggle"

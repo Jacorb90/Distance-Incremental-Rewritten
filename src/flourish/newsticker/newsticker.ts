@@ -1,3 +1,4 @@
+import { collapse } from "@/features/collapse/collapse";
 import { player } from "@/main";
 import { DISTANCES, parseFunc } from "@/util/format";
 import Decimal from "break_eternity.js";
@@ -147,6 +148,18 @@ const NEWSTICKER_DATA: NewsData[] = [
   {
     text: "Only someone who hasn't ascended to a higher plane would think the original Distance Incremental isn't worth playing now that a rewrite exists.",
   },
+  {
+    text: "Nyoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom!",
+  },
+  {
+    text: "What even is a parsec?",
+  },
+  {
+    text: "Isn't a lightyear a measure of time, not distance?",
+  },
+  {
+    text: "Maximum Velocity makes no sense. Terminal Velocity is a much better name imo",
+  },
 
   // Distance-based Conditions
   {
@@ -213,6 +226,10 @@ const NEWSTICKER_DATA: NewsData[] = [
     text: "Aw, you're doing so well! Feel free to take a break whenever you need one!",
     condition: () => player.achs.length >= 20,
   },
+  {
+    text: "Give me all your achievements.",
+    condition: () => player.achs.length >= 40,
+  },
 
   // Special Conditions
   {
@@ -222,6 +239,26 @@ const NEWSTICKER_DATA: NewsData[] = [
   {
     text: "Rocket Fuel is the best mechanic of the game, but only in the original.",
     condition: () => Decimal.gt(player.rocketFuel, 0),
+  },
+  {
+    text: "This isn't TFOA, stop pretending it is",
+    condition: () => player.featuresUnl.includes("auto"),
+  },
+  {
+    text: "This rewrite is awful; Time Reversal doesn't physically reverse time.",
+    condition: () => player.featuresUnl.includes("timeReversal"),
+  },
+  {
+    text: "Backwards we go!",
+    condition: () => player.timeReversal.active,
+  },
+  {
+    text: "Why do dead bodies make time go faster?",
+    condition: () => Decimal.gt(player.collapse.cadavers, 0),
+  },
+  {
+    text: "Bring me back to life.",
+    condition: () => Decimal.gt(collapse.data.essence.value, 0),
   },
 ];
 

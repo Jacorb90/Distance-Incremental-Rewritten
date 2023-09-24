@@ -4,7 +4,7 @@
     <div v-if="Decimal.neq(timeReversal.data.timeSpeed.value, 1)">
       <div id="timeSpeedDiv">
         <br />Time Speed:
-        {{ format(timeReversal.data.timeSpeed.value) }}x<br /><br />
+        {{ format(timeReversal.data.timeSpeed.value) }}&times;<br /><br />
       </div>
       <br />
     </div>

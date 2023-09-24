@@ -3,12 +3,14 @@ import { addFeature, signal } from "@/util/feature";
 import { formatDistance } from "@/util/format";
 import { computed } from "@vue/reactivity";
 import Decimal from "break_eternity.js";
-import { basics } from "../basics/basics";
+import { basics, hasRank, hasTier } from "../basics/basics";
 import { rocketFuel } from "../rocketFuel/rocketFuel";
 
 import type { Feature } from "@/util/feature";
 import { hasAch } from "../achs/achs";
 import { timeReversal } from "../timeReversal/timeReversal";
+import { Automated } from "../auto/auto";
+import { collapse, hasLEMil } from "../collapse/collapse";
 
 interface RocketData {
   startingReq: Decimal;
@@ -38,6 +40,17 @@ export const rockets: Feature<RocketData, { rocketUp: () => void }> =
           mult = mult.times(timeReversal.data[23].value.effect ?? 1);
 
         if (hasAch(16)) mult = mult.times(2);
+        if (hasRank(32)) mult = mult.times(1.2);
+        if (hasRank(40)) mult = mult.times(1.25);
+
+        if (hasTier(12)) mult = mult.times(Decimal.pow(1.05, player.rank));
+
+        if (player.auto[Automated.Rockets].mastered) mult = mult.times(2.5);
+
+        if (hasLEMil(24))
+          mult = mult.times(collapse.data[24].value.effect ?? 1);
+
+        if (hasAch(56)) mult = mult.times(1.09);
 
         return mult;
       }),
@@ -65,6 +78,8 @@ export const rockets: Feature<RocketData, { rocketUp: () => void }> =
           .times(1.5)
           .times(rocketFuel.data.eff4.value)
           .plus(hasAch(36) ? 0.1 : 0)
+          .plus(hasAch(54) ? 0.05 : 0)
+          .plus(hasLEMil(32) ? collapse.data[32].value.effect ?? 0 : 0)
       ),
       effMult: computed(() =>
         Decimal.mul(player.rockets, rocketFuel.data.eff1.value)

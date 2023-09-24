@@ -12,6 +12,7 @@ import { timeReversal } from "../timeReversal/timeReversal";
 import type { Feature } from "@/util/feature";
 import type { ComputedRef } from "@vue/reactivity";
 import type { DecimalSource } from "break_eternity.js";
+import { collapse, hasLEMil } from "../collapse/collapse";
 
 export const RANK_DESCS: Record<number, ComputedRef<string>> = {
   2: computed(() => `increase Maximum Velocity by ${formatWhole(1)} m/s.`),
@@ -47,6 +48,11 @@ export const RANK_DESCS: Record<number, ComputedRef<string>> = {
     () => `increase Maximum Velocity by ${formatWhole(10)}% per Rank.`
   ),
   25: computed(() => `double Acceleration and Maximum Velocity.`),
+  30: computed(() => `double Acceleration.`),
+  32: computed(() => `increase Rocket gain by ${formatWhole(20)}%.`),
+  35: computed(() => `double Acceleration.`),
+  40: computed(() => `increase Rocket gain by ${formatWhole(25)}%.`),
+  50: computed(() => `increase Time Speed by ${formatWhole(10)}%.`),
 };
 
 export const TIER_DESCS: Record<number, ComputedRef<string>> = {
@@ -68,10 +74,15 @@ export const TIER_DESCS: Record<number, ComputedRef<string>> = {
   4: computed(() => `double Acceleration and Maximum Velocity per Tier.`),
   5: computed(() => `double Acceleration and Maximum Velocity`),
   6: computed(() => `triple Acceleration.`),
-  7: computed(() => `decrease Rank requirement scaling by 5%.`),
-  8: computed(() => `decrease Rank requirement scaling by 5%.`),
-  9: computed(() => `decrease the Rank requirement base by 0.05.`),
+  7: computed(() => `decrease Rank requirement scaling by ${formatWhole(5)}%.`),
+  8: computed(() => `decrease Rank requirement scaling by ${formatWhole(5)}%.`),
+  9: computed(() => `decrease the Rank requirement base by ${format(0.05)}.`),
   10: computed(() => `triple Maximum Velocity.`),
+  12: computed(() => `increase Rocket gain by ${formatWhole(5)}% per Rank.`),
+  13: computed(() => `increase Time Speed by ${formatWhole(20)}%.`),
+  15: computed(
+    () => `decrease Rank requirement scaling by ${formatWhole(10)}%.`
+  ),
 };
 
 interface BasicData {
@@ -123,6 +134,8 @@ export const basics: Feature<BasicData, BasicActions> = addFeature(
         if (hasRank(10)) acc = Decimal.mul(acc, 1.5);
         if (hasRank(13)) acc = Decimal.mul(acc, 1.4);
         if (hasRank(25)) acc = Decimal.mul(acc, 2);
+        if (hasRank(30)) acc = Decimal.mul(acc, 2);
+        if (hasRank(35)) acc = Decimal.mul(acc, 2);
 
         if (hasTier(2) && hasRank(3)) acc = Decimal.mul(acc, 2);
         if (hasTier(4)) acc = Decimal.mul(acc, basics.data.tier3Reward.value);
@@ -134,6 +147,7 @@ export const basics: Feature<BasicData, BasicActions> = addFeature(
         if (hasAch(22)) acc = Decimal.mul(acc, 1.06);
         if (hasAch(32)) acc = Decimal.mul(acc, 1.07);
         if (hasAch(45)) acc = Decimal.mul(acc, 1.11);
+        if (hasAch(51)) acc = Decimal.mul(acc, 1.31);
 
         if (player.timeReversal.upgrades.includes(13))
           acc = Decimal.mul(acc, timeReversal.data[13].value.effect ?? 1);
@@ -169,6 +183,9 @@ export const basics: Feature<BasicData, BasicActions> = addFeature(
         if (player.timeReversal.upgrades.includes(13))
           vel = Decimal.mul(vel, timeReversal.data[13].value.effect ?? 1);
 
+        if (hasLEMil(33))
+          vel = Decimal.mul(vel, collapse.data[33].value.effect ?? 1);
+
         return vel;
       }),
       accel: computed(() =>
@@ -192,6 +209,12 @@ export const basics: Feature<BasicData, BasicActions> = addFeature(
         if (hasTier(9)) base -= 0.05;
         if (player.auto[Automated.Ranks].mastered) base -= 0.1;
 
+        if (hasAch(18)) base -= 0.05;
+        if (hasLEMil(23))
+          base -= new Decimal(collapse.data[23].value.effect ?? 0).toNumber();
+
+        // Lowest Possible: 1.23
+
         return base;
       }),
       rankReqDiv: computed(() => {
@@ -206,6 +229,7 @@ export const basics: Feature<BasicData, BasicActions> = addFeature(
 
         if (hasAch(23)) div = Decimal.div(div, 0.95);
         if (hasAch(43)) div = Decimal.div(div, 0.88);
+        if (hasAch(51)) div = Decimal.div(div, 0.84);
 
         return div;
       }),
@@ -214,6 +238,7 @@ export const basics: Feature<BasicData, BasicActions> = addFeature(
 
         if (hasTier(7)) mult += 0.05;
         if (hasTier(8)) mult += 0.05;
+        if (hasTier(15)) mult += 0.1;
 
         if (player.timeReversal.upgrades.includes(14)) mult += 0.1;
 
