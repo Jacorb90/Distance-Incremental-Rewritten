@@ -96,6 +96,13 @@ function renameSpecificSave(id: number) {
   justify-content: space-around;
 }
 
+.flexRow.center {
+  justify-content: center;
+}
+.JCstart {
+  justify-content: flex-start;
+}
+
 .flexCol {
   display: flex;
   flex-flow: column wrap;

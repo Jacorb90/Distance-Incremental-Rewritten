@@ -53,6 +53,10 @@ export const RANK_DESCS: Record<number, ComputedRef<string>> = {
   35: computed(() => `double Acceleration.`),
   40: computed(() => `increase Rocket gain by ${formatWhole(25)}%.`),
   50: computed(() => `increase Time Speed by ${formatWhole(10)}%.`),
+  64: computed(() => `double Maximum Velocity.`),
+  75: computed(() => `increase Time Speed by ${formatWhole(12)}%.`),
+  84: computed(() => `increase Rocket gain by ${formatWhole(30)}%.`),
+  100: computed(() => `decrease the Rank requirement base by ${format(0.05)}.`),
 };
 
 export const TIER_DESCS: Record<number, ComputedRef<string>> = {
@@ -83,6 +87,9 @@ export const TIER_DESCS: Record<number, ComputedRef<string>> = {
   15: computed(
     () => `decrease Rank requirement scaling by ${formatWhole(10)}%.`
   ),
+  18: computed(() => `decrease the Rank requirement base by ${format(0.01)}.`),
+  20: computed(() => `triple Acceleration.`),
+  24: computed(() => `increase Time Speed by ${formatWhole(25)}%.`),
 };
 
 interface BasicData {
@@ -141,6 +148,7 @@ export const basics: Feature<BasicData, BasicActions> = addFeature(
         if (hasTier(4)) acc = Decimal.mul(acc, basics.data.tier3Reward.value);
         if (hasTier(5)) acc = Decimal.mul(acc, 2);
         if (hasTier(6)) acc = Decimal.mul(acc, 3);
+        if (hasTier(20)) acc = Decimal.mul(acc, 3);
 
         if (hasAch(12)) acc = Decimal.mul(acc, 1.05);
         if (hasAch(14)) acc = Decimal.mul(acc, 1.15);
@@ -148,6 +156,7 @@ export const basics: Feature<BasicData, BasicActions> = addFeature(
         if (hasAch(32)) acc = Decimal.mul(acc, 1.07);
         if (hasAch(45)) acc = Decimal.mul(acc, 1.11);
         if (hasAch(51)) acc = Decimal.mul(acc, 1.31);
+        if (hasAch(67)) acc = Decimal.mul(acc, 1.13);
 
         if (player.timeReversal.upgrades.includes(13))
           acc = Decimal.mul(acc, timeReversal.data[13].value.effect ?? 1);
@@ -168,6 +177,7 @@ export const basics: Feature<BasicData, BasicActions> = addFeature(
         if (hasRank(18)) vel = Decimal.mul(vel, 2);
         if (hasRank(20)) vel = Decimal.mul(vel, basics.data.rank3Reward.value);
         if (hasRank(25)) vel = Decimal.mul(vel, 2);
+        if (hasRank(64)) vel = Decimal.mul(vel, 2);
 
         if (hasTier(1)) vel = Decimal.mul(vel, 1.2);
         if (hasTier(2) && hasRank(3)) vel = Decimal.mul(vel, 5);
@@ -206,14 +216,16 @@ export const basics: Feature<BasicData, BasicActions> = addFeature(
 
         if (hasRank(4)) base -= 0.3;
         if (hasRank(6)) base -= 0.25;
+        if (hasRank(100)) base -= 0.05;
         if (hasTier(9)) base -= 0.05;
+        if (hasTier(18)) base -= 0.01;
         if (player.auto[Automated.Ranks].mastered) base -= 0.1;
 
         if (hasAch(18)) base -= 0.05;
         if (hasLEMil(23))
           base -= new Decimal(collapse.data[23].value.effect ?? 0).toNumber();
 
-        // Lowest Possible: 1.23
+        // Lowest Possible: 1.13
 
         return base;
       }),

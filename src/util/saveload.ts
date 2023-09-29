@@ -9,6 +9,10 @@ import {
   CollapseSaveData,
   startingCollapseSaveData,
 } from "@/features/collapse/collapse";
+import {
+  PathogensSaveData,
+  startingPathogensSaveData,
+} from "@/features/pathogens/pathogens";
 
 export interface Version {
   alpha?: string;
@@ -58,6 +62,7 @@ export type Save = {
     upgrades: number[];
   };
   collapse: CollapseSaveData;
+  pathogens: PathogensSaveData;
 };
 
 export interface MetaSave {
@@ -86,7 +91,7 @@ export function startingSave(saveID: number, modes: string[] = []): Save {
   return {
     tab: null,
     version: {
-      alpha: "1.4",
+      alpha: "1.5",
     },
     achs: [],
     saveID,
@@ -117,6 +122,7 @@ export function startingSave(saveID: number, modes: string[] = []): Save {
       upgrades: [],
     },
     collapse: startingCollapseSaveData(),
+    pathogens: startingPathogensSaveData(),
   };
 }
 

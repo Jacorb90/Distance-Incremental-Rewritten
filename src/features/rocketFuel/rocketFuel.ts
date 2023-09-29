@@ -8,6 +8,7 @@ import type { Feature } from "@/util/feature";
 import { timeReversal } from "../timeReversal/timeReversal";
 import { Automated, auto } from "../auto/auto";
 import { hasLEMil } from "../collapse/collapse";
+import { pathogens } from "../pathogens/pathogens";
 
 interface RocketFuelData {
   cost: Decimal;
@@ -50,6 +51,8 @@ export const rocketFuel: Feature<RocketFuelData, { fuelUp: () => void }> =
           extra = extra.plus(timeReversal.data[15].value.effect ?? 0);
 
         if (player.auto[Automated.RocketFuel].mastered) extra = extra.plus(1);
+        if (pathogens.data[33].value.unl ?? true)
+          extra = extra.plus(pathogens.data[33].value.effect);
 
         return extra;
       }),
@@ -57,6 +60,8 @@ export const rocketFuel: Feature<RocketFuelData, { fuelUp: () => void }> =
         let p = Decimal.dOne;
 
         if (hasLEMil(34)) p = p.plus(0.2);
+        if (pathogens.data[44].value.unl ?? true)
+          p = p.plus(pathogens.data[44].value.effect);
 
         return p;
       }),

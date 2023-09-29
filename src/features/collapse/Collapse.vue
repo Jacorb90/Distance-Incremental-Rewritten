@@ -32,11 +32,15 @@
         <div
           v-for="r in COLLAPSE_MILESTONE_ROWS"
           :key="r"
-          class="row justify-center q-gutter-xs"
+          class="row JCstart q-gutter-xs"
         >
           <div
             v-for="id in Object.keys(COLLAPSE_MILESTONE_REQS)
-              .filter((id) => id.startsWith(r.toString()))
+              .filter(
+                (id) =>
+                  id.startsWith(r.toString()) &&
+                  (collapse.data[Number(id)].value.unl ?? true)
+              )
               .map(Number)"
             :key="id"
             class="lifeEssenceMilestone"
@@ -103,6 +107,7 @@ import {
   border: 1px solid grey;
   background-color: rgb(40, 60, 75);
   padding: 0.2em;
+  margin: 1px;
 }
 
 .lifeEssenceMilestone.earned {

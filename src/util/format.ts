@@ -123,8 +123,14 @@ function nPlaces(
   if (base == 10) {
     if (num < 0.001) {
       if (num <= 1e-100) return "0";
-      const e = Math.floor(-1 * Math.log10(num));
-      const m = num * Math.pow(10, e + 1);
+      let e = Math.floor(-1 * Math.log10(num));
+      let m = num * Math.pow(10, e + 1);
+
+      if (m >= 10) {
+        m /= 10;
+        e -= 1;
+      }
+
       return (
         nPlaces(m, places, false, base) + "e-" + nPlaces(e, places, true, base)
       );
@@ -341,7 +347,59 @@ export function format(
     default: // Scientific (2)
       if (d.lt(1e3)) return dPlaces(d, places);
       else if (d.lt(1e16)) return d.toExponential(places).replaceAll("+", "");
-      return d.toStringWithDecimalPlaces(places);
+      return scientificFormat(d, places, false);
+  }
+}
+
+function scientificFormat(
+  num: Decimal,
+  precision: number,
+  small: boolean
+): string {
+  if (isNaN(num.sign) || isNaN(num.layer) || isNaN(num.mag)) {
+    return "NaN";
+  }
+  if (num.sign < 0)
+    return "-" + scientificFormat(num.negate(), precision, small);
+  if (num.gte(new Decimal("eeee1000"))) {
+    const slog = num.slog();
+    if (slog.gte("1e6")) {
+      return "F" + format(slog.floor());
+    } else {
+      return (
+        Decimal.pow(10, slog.sub(slog.floor())).toStringWithDecimalPlaces(3) +
+        "F" +
+        formatWhole(slog.floor())
+      );
+    }
+  } else if (num.gte(new Decimal("e100000"))) {
+    return exponentialFormat(num, 0, false);
+  } else if (num.gte(new Decimal("e1000"))) {
+    return exponentialFormat(num, 0);
+  } else if (num.gte("1e16")) {
+    return exponentialFormat(num, precision);
+  } else return num.toExponential(precision).replaceAll("+", "");
+}
+function exponentialFormat(
+  num: DecimalSource,
+  precision: number,
+  mantissa = true
+): string {
+  let e = Decimal.log10(num).floor();
+  let m = Decimal.div(num, Decimal.pow(10, e));
+  if (m.toStringWithDecimalPlaces(precision) === "10") {
+    m = Decimal.dOne;
+    e = e.add(1);
+  }
+  const eString = e.gte(1e9)
+    ? format(e, Math.max(Math.max(precision, 3), 1))
+    : e.gte(10000)
+    ? formatWhole(e)
+    : e.toStringWithDecimalPlaces(0);
+  if (mantissa) {
+    return m.toStringWithDecimalPlaces(precision) + "e" + eString;
+  } else {
+    return "e" + eString;
   }
 }
 

@@ -11,6 +11,7 @@ import { timeReversal } from "../timeReversal/timeReversal";
 import { collapse } from "../collapse/collapse";
 import { rockets } from "../rockets/rockets";
 import { rocketFuel } from "../rocketFuel/rocketFuel";
+import { pathogens } from "../pathogens/pathogens";
 
 type AchData = Record<
   number,
@@ -66,6 +67,15 @@ export const ACH_NAMES: Record<number, string> = {
   56: "Nuclear Physicist",
   57: "Temporal Sight",
   58: "The Source of Existence",
+
+  61: "This Can't Be Good...",
+  62: "No More Lives",
+  63: "Nice.",
+  64: "Hyperspeed",
+  65: "The Next Level",
+  66: "Execute The Order",
+  67: "Nested Universes",
+  68: "Smart Bird",
 };
 
 const ACH_IDS = Object.keys(ACH_NAMES).map(Number);
@@ -316,6 +326,58 @@ export const achs: Feature<AchData, {}> = addFeature("achs", 1, {
       unl: player.collapse.milestones.length >= 12,
       desc: `Earn ${formatWhole(12)} Collapse Milestones.`,
       reward: `Increase Time Speed by ${formatWhole(7)}%.`,
+    })),
+
+    61: computed(() => ({
+      unl: Decimal.gte(player.pathogens.upgrades[11] ?? 0, 1),
+      desc: `Purchase a Viral Creation.`,
+    })),
+
+    62: computed(() => ({
+      unl:
+        Decimal.gte(collapse.data.essence.value, 3000) &&
+        Decimal.lte(player.tier, 1) &&
+        Decimal.eq(player.rockets, 0) &&
+        Decimal.eq(player.rocketFuel, 0),
+      desc: `Create ${formatWhole(
+        3000
+      )} Life Essence without Rockets or Rocket Fuel, and at Tier ${formatWhole(
+        1
+      )}.`,
+      reward: `Increase Life Essence gain by ${1}.`,
+    })),
+
+    63: computed(() => ({
+      unl: Decimal.gte(player.rank, 69),
+      desc: `Reach Rank ${formatWhole(69)}.`,
+    })),
+
+    64: computed(() => ({
+      unl: Decimal.gte(timeReversal.data.timeSpeed.value, 1e6),
+      desc: `Reach ${format(1e6)}x Time Speed.`,
+    })),
+
+    65: computed(() => ({
+      unl: Decimal.gte(player.pathogens.upgrades[32] ?? 0, 5),
+      desc: `Purchase ${formatWhole(5)} Viral Evolutions.`,
+      reward: `Increase Pathogen gain by ${formatWhole(4)}%.`,
+    })),
+
+    66: computed(() => ({
+      unl: Decimal.gte(player.collapse.cadavers, 1e15),
+      desc: `Get ${format(1e15)} Cadavers.`,
+    })),
+
+    67: computed(() => ({
+      unl: Decimal.gte(player.distance, Decimal.mul("1e80", DISTANCES.uni)),
+      desc: `Reach ${formatDistance(Decimal.mul("1e80", DISTANCES.uni))}.`,
+      reward: `Increase Acceleration by ${formatWhole(13)}%.`,
+    })),
+
+    68: computed(() => ({
+      unl: Decimal.gte(pathogens.data.totalUpgs.value, 1e3),
+      desc: `Reach ${formatWhole(1e3)} Total Pathogen Upgrades.`,
+      reward: `Increase Time Speed by ${formatWhole(9)}%.`,
     })),
   },
 

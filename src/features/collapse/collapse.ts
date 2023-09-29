@@ -6,8 +6,9 @@ import { computed } from "vue";
 import { hasAch } from "../achs/achs";
 import { rocketFuel } from "../rocketFuel/rocketFuel";
 import { Automated } from "../auto/auto";
+import { pathogens } from "../pathogens/pathogens";
 
-export const COLLAPSE_MILESTONE_ROWS: number[] = [1, 2, 3];
+export const COLLAPSE_MILESTONE_ROWS: number[] = [1, 2, 3, 4];
 export const COLLAPSE_MILESTONE_COLS = computed(() =>
   Object.keys(COLLAPSE_MILESTONE_REQS)
     .filter((name) => name.startsWith("1"))
@@ -29,6 +30,11 @@ export const COLLAPSE_MILESTONE_REQS: Record<number, DecimalSource> = {
   32: 1e4,
   33: 14700,
   34: 19400,
+
+  41: 250e3,
+  42: 1e6,
+  43: "1.8e308",
+  44: "1e10000",
 };
 
 export interface CollapseSaveData {
@@ -63,10 +69,15 @@ type CollapseData = Record<
   essence: Decimal;
 
   essenceGain: Decimal;
+
+  clm11Base: Decimal;
 };
 
 export function hasLEMil(n: number) {
-  return player.collapse.milestones.includes(n);
+  return (
+    player.collapse.milestones.includes(n) &&
+    (collapse.data[n].value.unl ?? true)
+  );
 }
 
 export const collapse: Feature<CollapseData, { collapseUp: () => void }> =
@@ -108,6 +119,8 @@ export const collapse: Feature<CollapseData, { collapseUp: () => void }> =
       eff: computed(() => {
         let e = Decimal.add(player.collapse.cadavers, 1).log2().plus(1);
 
+        if (pathogens.data[41].value.unl ?? true)
+          e = e.pow(Decimal.add(1, pathogens.data[41].value.effect));
         if (hasLEMil(11)) e = e.pow(collapse.data[11].value.effect ?? 1);
 
         return e;
@@ -117,6 +130,9 @@ export const collapse: Feature<CollapseData, { collapseUp: () => void }> =
         let gain = Decimal.add(player.collapse.cadavers, 1).log2();
 
         if (hasAch(38)) gain = gain.plus(1);
+        if (hasAch(62)) gain = gain.plus(1);
+        if (pathogens.data[31].value.unl ?? true)
+          gain = gain.plus(pathogens.data[31].value.effect);
 
         return gain.floor();
       }),
@@ -132,6 +148,15 @@ export const collapse: Feature<CollapseData, { collapseUp: () => void }> =
           player.collapse.spent
         ).max(0)
       ),
+
+      clm11Base: computed(() => {
+        let base = new Decimal(5);
+
+        if (pathogens.data[22].value.unl ?? true)
+          base = base.plus(pathogens.data[22].value.effect);
+
+        return base;
+      }),
 
       11: computed(() => ({
         description: `Life Essence powers up the Cadaver effect.`,
@@ -189,10 +214,10 @@ export const collapse: Feature<CollapseData, { collapseUp: () => void }> =
       })),
       33: computed(() => ({
         description: `Increase Max Velocity by ${formatWhole(
-          5
+          collapse.data.clm11Base.value
         )}% per Auto-Rocket/Rocket Fuel Efficiency Level.`,
         effect: Decimal.pow(
-          1.05,
+          Decimal.add(1, Decimal.div(collapse.data.clm11Base.value, 100)),
           Decimal.add(
             player.auto[Automated.Rockets].level,
             player.auto[Automated.RocketFuel].level
@@ -201,6 +226,25 @@ export const collapse: Feature<CollapseData, { collapseUp: () => void }> =
       })),
       34: computed(() => ({
         description: `Increase Rocket Fuel Power by ${format(0.2)}.`,
+      })),
+
+      41: computed(() => ({
+        unl: player.featuresUnl.includes("pathogens"),
+        description: `Multiply Rocket gain by Life Essence.`,
+        effect: collapse.data.essence.value,
+      })),
+      42: computed(() => ({
+        unl: player.featuresUnl.includes("pathogens"),
+        description: `Increase Pathogen gain by ${formatWhole(1)}% per Rank.`,
+        effect: Decimal.pow(1.01, player.rank),
+      })),
+      43: computed(() => ({
+        unl: false,
+        description: `?????`,
+      })),
+      44: computed(() => ({
+        unl: false,
+        description: `?????`,
       })),
     },
 
@@ -220,6 +264,7 @@ export const collapse: Feature<CollapseData, { collapseUp: () => void }> =
             const id = Number(row + col);
             if (
               !player.collapse.milestones.includes(id) &&
+              (collapse.data[id].value.unl ?? true) &&
               Decimal.gte(
                 collapse.data.essence.value,
                 COLLAPSE_MILESTONE_REQS[id]

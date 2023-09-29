@@ -37,7 +37,7 @@ import { ACH_NAMES, achs, hasAch, getAchCount } from "./achs";
 import { formatWhole } from "@/util/format";
 import Tooltip from "@/components/Tooltip.vue";
 
-const ACH_ROWS = 5;
+const ACH_ROWS = 6;
 const ACH_COLS = 8;
 </script>
 

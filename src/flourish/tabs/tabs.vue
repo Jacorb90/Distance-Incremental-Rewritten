@@ -188,4 +188,14 @@ import { availableTabs, setTab } from "./tabs";
   background-color: hsl(235, 50%, 35%);
   border-color: hsl(254, 50%, 60%);
 }
+
+.btn.pathogens {
+  background-color: hsl(66, 51%, 20%);
+  border-color: hsl(67, 50%, 40%);
+}
+
+.btn.pathogens:hover {
+  background-color: hsl(67, 50%, 40%);
+  border-color: hsl(66, 51%, 20%);
+}
 </style>
