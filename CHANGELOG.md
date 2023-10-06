@@ -1,8 +1,13 @@
 # Changelog
 
+## α1.5.1
+
+- Added the last Pathogen Upgrade
+
 ## α1.5
 
 - Implemented Pathogens
+- Added a few Collapse Milestones
 
 ## α1.4
 

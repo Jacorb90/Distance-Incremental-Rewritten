@@ -30,11 +30,7 @@ export const PATHOGEN_UPGS: number[][] = [
   [11],
   [21, 22],
   [31, 32, 33],
-  [
-    41, 42,
-    // 43,
-    44,
-  ],
+  [41, 42, 43, 44],
 ];
 
 type PathogensData = Record<
@@ -71,7 +67,7 @@ export const pathogenUpgCostFormulas: Record<number, CostFormula> = {
   33: createPolyExponentialCBF(2.5e3, 1.2, 1.6, createPathogenVP(33)),
   41: createPolyExponentialCBF(1.5e8, 1.3, 1.4, createPathogenVP(41)),
   42: createPolyExponentialCBF(2.5e10, 1.08, 1.35, createPathogenVP(42)),
-  // 43
+  43: createPolyExponentialCBF(1e14, 1.6, 1.3, createPathogenVP(43)),
   44: createPolyExponentialCBF(1e5, 1.15, 1.7, createPathogenVP(44)),
 };
 
@@ -224,6 +220,20 @@ export const pathogens: Feature<
         )} extra level to the first two rows of Pathogen Upgrades per Auto-TR Upgrade Efficiency Level.`,
         effect,
         effectDesc: `+${formatWhole(effect)}`,
+      };
+    }),
+    43: computed(() => {
+      const effect = Decimal.div(player.pathogens.upgrades[43] ?? 0, 10).plus(
+        1
+      );
+      return {
+        unl: Decimal.gte(player.pathogens.upgrades[42] ?? 0, 1),
+        name: "Viral Implosion",
+        description: `Increase the power of TR Upgrades 7 & 9 by ${formatWhole(
+          10
+        )}% (additive).`,
+        effect,
+        effectDesc: `+${formatWhole(Decimal.sub(effect, 1).times(100))}%`,
       };
     }),
     44: computed(() => {
