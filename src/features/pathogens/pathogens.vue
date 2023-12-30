@@ -40,6 +40,32 @@
 
       Cost:
       {{ format(pathogenUpgCostFormulas[id].accCost.value) }} Pathogens<br />
+
+      <q-tooltip
+        v-if="
+          Decimal.gt(
+            Decimal.sub(
+              pathogenUpgCostFormulas[id].target.value,
+              player.pathogens.upgrades[id]
+            ).floor(),
+            0
+          )
+        "
+      >
+        <b
+          >+{{
+            formatWhole(
+              Decimal.max(
+                Decimal.sub(
+                  pathogenUpgCostFormulas[id].target.value,
+                  player.pathogens.upgrades[id]
+                ),
+                0
+              ).floor()
+            )
+          }}</b
+        >
+      </q-tooltip>
     </button>
   </div>
 
