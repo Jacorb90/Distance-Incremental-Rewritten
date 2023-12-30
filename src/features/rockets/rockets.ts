@@ -42,6 +42,7 @@ export const rockets: Feature<RocketData, { rocketUp: () => void }> =
         if (hasAch(16)) mult = mult.times(2);
         if (hasRank(32)) mult = mult.times(1.2);
         if (hasRank(40)) mult = mult.times(1.25);
+        if (hasRank(84)) mult = mult.times(1.3);
 
         if (hasTier(12)) mult = mult.times(Decimal.pow(1.05, player.rank));
 
@@ -49,6 +50,8 @@ export const rockets: Feature<RocketData, { rocketUp: () => void }> =
 
         if (hasLEMil(24))
           mult = mult.times(collapse.data[24].value.effect ?? 1);
+        if (hasLEMil(41))
+          mult = mult.times(collapse.data[41].value.effect ?? 1);
 
         if (hasAch(56)) mult = mult.times(1.09);
 
