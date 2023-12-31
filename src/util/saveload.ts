@@ -1,6 +1,6 @@
 import { toRaw } from "vue";
 import { metaSave, player } from "../main";
-import { Notify } from "quasar";
+import { Notify, Dialog } from "quasar";
 import { generateInitialAutoState } from "@/features/auto/auto";
 
 import type { DecimalSource } from "break_eternity.js";
@@ -175,20 +175,25 @@ export function loadSpecificSave(id: number) {
 }
 
 export function deleteSpecificSave(id: number) {
-  if (!confirm("Are you sure you want to delete this save?")) return;
+  Dialog.create({
+    dark: true,
+    message: "Are you sure you want to delete this save?",
+    cancel: true,
+    persistent: true,
+  }).onOk(() => {
+    delete metaSave.saves[id];
+    if (metaSave.currentSave == id) {
+      metaSave.currentSave = Math.max(metaSave.currentSave - 1, 0);
+      loadSpecificSave(metaSave.currentSave);
+    }
 
-  delete metaSave.saves[id];
-  if (metaSave.currentSave == id) {
-    metaSave.currentSave = Math.max(metaSave.currentSave - 1, 0);
-    loadSpecificSave(metaSave.currentSave);
-  }
-
-  Notify.create({
-    message: "Save deleted!",
-    position: "top-right",
-    type: "negative",
-    timeout: 2000,
-    badgeStyle: "opacity: 0;",
+    Notify.create({
+      message: "Save deleted!",
+      position: "top-right",
+      type: "negative",
+      timeout: 2000,
+      badgeStyle: "opacity: 0;",
+    });
   });
 }
 

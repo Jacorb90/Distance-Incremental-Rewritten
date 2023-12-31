@@ -1,6 +1,6 @@
 import { createApp, reactive } from "vue";
 import App from "./App.vue";
-import { Quasar, Notify } from "quasar";
+import { Quasar, Notify, Dialog } from "quasar";
 import { checkNextNews, newsMovement } from "./flourish/newsticker/newsticker";
 import {
   loadSave,
@@ -56,7 +56,7 @@ export function load() {
 const app = createApp(App);
 
 app.use(Quasar, {
-  plugins: { Notify },
+  plugins: { Notify, Dialog },
 });
 
 app.mount("#app");

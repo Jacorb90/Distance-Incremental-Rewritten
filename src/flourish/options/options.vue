@@ -83,9 +83,21 @@ import { OPTION_DATA, loadModalOpen } from "./options";
 import { loadSpecificSave, deleteSpecificSave } from "@/util/saveload";
 import { parseFunc, formatDistance } from "@/util/format";
 import { metaSave } from "@/main";
+import { useQuasar } from "quasar";
+
+const $q = useQuasar();
 
 function renameSpecificSave(id: number) {
-  metaSave.saves[id].saveName = prompt("Type save name here:") ?? "Save #" + id;
+  $q.dialog({
+    dark: true,
+    message: "Rename your save to:",
+    prompt: {
+      model: metaSave.saves[id].saveName,
+      type: "text",
+    },
+  }).onOk((name) => {
+    metaSave.saves[id].saveName = name ?? "Save #" + id;
+  });
 }
 </script>
 

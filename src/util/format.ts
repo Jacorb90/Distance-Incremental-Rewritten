@@ -183,6 +183,8 @@ export function format(
 
   if (d.sign == -1) return "-" + format(d.times(-1), places, notation);
 
+  if (d.sign == 0) return "0";
+
   switch (notation) {
     case 0: // Mixed Scientific (0)
       if (d.lt(0.001)) return format(d, places, 2);
@@ -193,7 +195,7 @@ export function format(
       else return format(d, places, 2);
 
     case 1: // Standard (1)
-      if (d.lt(0.001)) return "0";
+      if (d.lt(0.001)) return format(d, places, 2);
       else if (d.lt(1e3)) return dPlaces(d, places);
       else {
         const mantissa = d.div(

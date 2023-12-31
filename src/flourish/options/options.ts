@@ -1,6 +1,6 @@
 import { player, metaSave } from "@/main";
 import { saveGame, startingSave } from "@/util/saveload";
-import { Notify } from "quasar";
+import { Notify, Dialog } from "quasar";
 import { ref } from "vue";
 
 import type { StyleValue } from "vue";
@@ -30,25 +30,32 @@ export const OPTION_DATA: {SAVING: OptionData[], OTHER: OptionData[]} = {
     {
       text: "Import",
       action: () => {
-        const data = prompt("Paste your save data here: ");
+        Dialog.create({
+          dark: true,
+          message: "Import your save here:",
+          prompt: {
+            model: "",
+            type: "textarea",
+          },
+        }).onOk((data) => {
+          if (data !== null) {
+            try {
+              metaSave.saves[metaSave.currentSave] = JSON.parse(atob(data));
+              saveGame(false);
 
-        if (data !== null) {
-          try {
-            metaSave.saves[metaSave.currentSave] = JSON.parse(atob(data));
-            saveGame(false);
-
-            location.reload();
-          } catch (e) {
-            Notify.create({
-              message: "Import Error!",
-              position: "top-right",
-              type: "danger",
-              timeout: 5000,
-              badgeStyle: "opacity: 0;",
-            });
-            console.error(e);
+              location.reload();
+            } catch (e) {
+              Notify.create({
+                message: "Import Error!",
+                position: "top-right",
+                type: "danger",
+                timeout: 5000,
+                badgeStyle: "opacity: 0;",
+              });
+              console.error(e);
+            }
           }
-        }
+        });
       },
     },
     {
@@ -79,16 +86,20 @@ export const OPTION_DATA: {SAVING: OptionData[], OTHER: OptionData[]} = {
     {
       text: "HARD RESET",
       action: () => {
-        if (!confirm("Are you sure you want to reset your current save?"))
-          return;
+        Dialog.create({
+          dark: true,
+          message: "Are you sure you want to reset your current save?",
+          cancel: true,
+          persistent: true,
+        }).onOk(() => {
+          metaSave.saves[metaSave.currentSave] = startingSave(
+            metaSave.currentSave,
+            metaSave.saves[metaSave.currentSave].modes
+          );
 
-        metaSave.saves[metaSave.currentSave] = startingSave(
-          metaSave.currentSave,
-          metaSave.saves[metaSave.currentSave].modes
-        );
-
-        saveGame(false);
-        location.reload();
+          saveGame(false);
+          location.reload();
+        });
       },
       classes: {
         neg: true,
